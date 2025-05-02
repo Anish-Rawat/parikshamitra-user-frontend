@@ -10,6 +10,7 @@ const CreateTestPage: React.FC = () => {
     class: '',
     subject: '',
     difficulty: '',
+    noOfQuestions: '',
   });
   const [selectedQuestions, setSelectedQuestions] = useState<number[]>([]);
 
@@ -46,6 +47,13 @@ const CreateTestPage: React.FC = () => {
       setSelectedQuestions([...selectedQuestions, id]);
     }
   };
+
+  const handleKeyDownForNumber = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log(e.key);
+    if (!['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'backspace'].includes(e.key)) {
+      e.preventDefault();
+    }
+  }
 
   return (
     <div className="min-h-screen p-6 bg-gray-50 flex flex-col items-center">
@@ -143,6 +151,18 @@ const CreateTestPage: React.FC = () => {
                 <option value="hard">Hard</option>
               </select>
             </div>
+            <div>
+              <label className="block font-medium mb-1">No. of Questions</label>
+              <input
+                type="text"
+                onKeyDown={(e) => handleKeyDownForNumber(e)}
+                name="noOfQuestions"
+                value={formData.noOfQuestions}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                placeholder="Enter the number of questions"
+              />
+            </div>
 
             <button
               onClick={handleNext}
@@ -215,7 +235,7 @@ const CreateTestPage: React.FC = () => {
             </div>
             <button
               onClick={() => {
-                setFormData({ testName: '', category: '', class: '', subject: '', difficulty: '' });
+                setFormData({ testName: '', category: '', class: '', subject: '', difficulty: '', noOfQuestions: '' });
                 setSelectedQuestions([]);
                 setStep('configure');
               }}
