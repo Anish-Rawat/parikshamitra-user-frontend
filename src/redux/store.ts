@@ -1,9 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
+import classReducer from './slices/classSlice'
+import subjectReducer from './slices/subjectSlice'
+import QuestionReducer from './slices/questionManagement'
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      // reducers will be define here
+      class:classReducer,
+      subject: subjectReducer,
+      question:QuestionReducer,
+
     },
   })
 }
