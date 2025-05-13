@@ -1,26 +1,36 @@
+'use client'
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardActionArea, Button, Typography, Breadcrumbs } from "@mui/material";
 import { ChevronRight } from "lucide-react";
+import { ClassInterface } from "@/common/interface";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { useSession } from "next-auth/react";
+import { filteredSubjects } from "@/utils/helper";
+import { ACCESS_TOKEN } from "@/utils/constants";
+import { useAppSelector } from "@/lib/hooks";
 
 interface SubjectPageProps {
-  params: {
-    type: string;
-    id: string;
-  };
+  params: ClassInterface
 }
 
 export default function SubjectPage({ params }: SubjectPageProps) {
-  const { type, id } = params;
-
+  const { className, classId='', totalSubjects,category } = params;
+  const dispatch = useDispatch<AppDispatch>();
+  const {data:session} = useSession();
+  const subjects  = useAppSelector((state)=>state.subject.data)
+  console.log("subjects",subjects);
+  useEffect(()=>{
+    filteredSubjects(dispatch,ACCESS_TOKEN,classId,1,10)
+  })
   // Validate type
-  if (type !== "class" && type !== "stream") {
+  if (category !== "class" && category !== "stream") {
     notFound();
   }
 
-  const title = type === "class" ? `Class ${id}` : capitalizeFirstLetter(id);
-
-  const subjects = getSubjects(type, id);
+  const title = category === "class" ? `Class ${classId}` : capitalizeFirstLetter(classId);
 
   return (
     <div className="container mx-auto p-4 md:p-6">
@@ -37,7 +47,7 @@ export default function SubjectPage({ params }: SubjectPageProps) {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {subjects.map((subject) => (
-          <Link href={`/preparation/${type}/${id}/subject/${subject.id}`} key={subject.id}>
+          <Link href={`/preparation/${category}/${classId}/subject/${subject.subjectId}`} key={subject.subjectId}>
             <Card
               sx={{
                 transition: "all 0.3s",
