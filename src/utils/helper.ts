@@ -1,7 +1,19 @@
+import { getClasses } from "@/redux/slices/classSlice";
 import { getQuestions } from "@/redux/slices/questionSlice";
 import { getSubjects } from "@/redux/slices/subjectSlice";
 import { AppDispatch } from "@/redux/store";
 import { signIn } from "next-auth/react";
+
+export const getClassesMiddleware = async (
+  dispatch: AppDispatch,
+  accessToken: string
+) => {
+  try {
+    await dispatch(getClasses({ accessToken }));
+  } catch (error) {
+    console.error("Error fetching classes:", error); // ✅ Correct variable name
+  }
+};
 
 export const filteredSubjects = async (
   dispatch: AppDispatch,
@@ -20,7 +32,7 @@ export const filteredSubjects = async (
       })
     );
   } catch (err) {
-    console.error("Error fetching classes:", err);
+    console.error("Error fetching subjects:", err);
   }
 };
 
@@ -58,3 +70,4 @@ export const fetchQuestions = async (
 export const socialLogin = async (type: string) => {
   await signIn(type, {callbackUrl: "/dashboard"});
 };
+
