@@ -1,6 +1,9 @@
 import type React from "react";
 import "@/app/globals.css";
-import StoreProvider from "@/store-provider";
+import StoreProvider from "@/wrapper/store-provider";
+import { ToastContainer } from "react-toastify";
+import NextAuthSessionProvider from "@/wrapper/next-auth-session-provider";
+import TokenLoader from "@/components/token-loader";
 import NextAuthSessionProvider from "@/wrapper/next-auth-session-provider";
 
 export default function RootLayout({
@@ -15,13 +18,17 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <StoreProvider>
+        <NextAuthSessionProvider>
+          <StoreProvider>
           <NextAuthSessionProvider>
+                <ToastContainer />
+             <TokenLoader />
             <div className="flex min-h-screen">
-              <main className="flex-1 overflow-x-hidden">{children}</main>
-            </div>
+                  <main className="flex-1 overflow-x-hidden">{children}</main>
+                </div>
           </NextAuthSessionProvider>
-        </StoreProvider>
+          </StoreProvider>
+        </NextAuthSessionProvider>
       </body>
     </html>
   );
