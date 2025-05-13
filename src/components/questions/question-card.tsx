@@ -14,16 +14,6 @@ import {
 import { CheckCircle, Cancel } from "@mui/icons-material";
 import { QuestionInterface } from "@/common/interface";
 
-interface Question {
-  id: string;
-  text: string;
-  options: {
-    id: string;
-    text: string;
-  }[];
-  correctAnswer: string;
-}
-
 interface QuestionCardProps {
   question: QuestionInterface;
   number: number;
