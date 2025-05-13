@@ -1,9 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Box, Card, CardContent, CardHeader, Typography, Tab, Tabs } from "@mui/material";
 import { TabPanel, TabContext } from "@mui/lab";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { useSession } from "next-auth/react";
+import { getClassesMiddleware } from "@/utils/helper";
+import { ClassInterface } from "@/common/interface";
+import { useAppSelector } from "@/lib/hooks";
+import { ACCESS_TOKEN } from "@/utils/constants";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useSession } from "next-auth/react";
@@ -27,7 +34,7 @@ export default function PreparationPage() {
   },[totalClassesAndStreams])
   useEffect(()=>{
     getClassesMiddleware(dispatch,ACCESS_TOKEN)
-  },[dispatch,session?.user?.accessToken])
+  },[dispatch,ACCESS_TOKEN])
   
   const  ClassCategories = () => {  
     return (

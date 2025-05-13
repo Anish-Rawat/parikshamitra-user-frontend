@@ -5,6 +5,13 @@ import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import { Tabs, Tab, Box, Typography, Pagination } from "@mui/material"
 import { QuestionCard } from "@/components/questions/question-card";
+import { useEffect, useState } from "react"
+import { fetchQuestions, filteredSubjects, getClassesMiddleware } from "@/utils/helper"
+import { ACCESS_TOKEN } from "@/utils/constants"
+import { useDispatch } from "react-redux"
+import { AppDispatch } from "@/redux/store"
+import { useSession } from "next-auth/react"
+import { useAppSelector } from "@/lib/hooks"
 
 interface SubjectQuestionsPageProps {
   params: {
@@ -12,27 +19,55 @@ interface SubjectQuestionsPageProps {
     id: string
     subjectId: string
   }
-  searchParams: {
-    difficulty?: string
-    page?: string
-  }
+  // searchParams: {
+  //   difficulty?: string
+  //   page?: string
+  // }
 }
 
-export default function SubjectQuestionsPage({ params, searchParams }: SubjectQuestionsPageProps) {
+export default function SubjectQuestionsPage({ params }: SubjectQuestionsPageProps) {
   const { type, id, subjectId } = params
-  const difficulty = searchParams.difficulty || "easy"
-  const page = Number.parseInt(searchParams.page || "1")
-
+  const [difficultyLevel, setDifficultyLevel] = useState<'easy' | 'medium' | 'hard'>('easy');
+  const dispatch = useDispatch<AppDispatch>();
+  const {data:session} = useSession();
+  const totalClassesAndStreams  = useAppSelector((state)=>state.class.data)
+  console.log("totalClassesAndStreams",totalClassesAndStreams)
+  const subjects  = useAppSelector((state)=>state.subject.data)
+  const questions  = useAppSelector((state)=>state.question.data)
+  const currentClassOrStream = totalClassesAndStreams?.find((item) => item.classId === id);
+  const currentSubject = subjects?.find((item) => item.subjectId === subjectId);
+  const page = 1;
+  console.log("subjects",subjects)
+  console.log("currentClassOrStream",currentClassOrStream)
   // Validate type
   if (type !== "class" && type !== "stream") {
     notFound()
   }
+useEffect(() => {
+    getClassesMiddleware(dispatch,ACCESS_TOKEN)
+    filteredSubjects(dispatch, ACCESS_TOKEN, id, 1, 10);
+    fetchQuestions(dispatch,ACCESS_TOKEN,id,subjectId,difficultyLevel,page,10)
+  }, [dispatch, id,ACCESS_TOKEN,subjectId]);
 
-  const categoryTitle = type === "class" ? `Class ${id}` : capitalizeFirstLetter(id)
-  const subjectName = getSubjectName(subjectId)
-
-  // Get questions based on subject and difficulty
-  const { questions, totalPages } = getQuestions(subjectId, difficulty, page)
+  let title ;
+  if(type === "class"){
+    if(currentClassOrStream){
+      title = `Class ${currentClassOrStream?.className}`;
+    }else{
+      title = "";
+    }
+  }else if(type === "stream"){
+    if(currentClassOrStream){
+      title = `Stream ${currentClassOrStream?.className}`
+    }
+    else{
+      title = "";
+    }
+  }
+  const handleDifficultyLevelChange = (_event: React.SyntheticEvent, newValue: 'easy' | 'medium' | 'hard') => {
+    setDifficultyLevel(newValue)
+    window.location.href = `?difficulty=${newValue}&page=1`
+  }
 
   return (
     <Box className="container mx-auto p-4 md:p-6">
@@ -40,22 +75,19 @@ export default function SubjectQuestionsPage({ params, searchParams }: SubjectQu
         <Box display="flex" alignItems="center" gap={2} fontSize="0.875rem" color="text.secondary" mb={2}>
           <Link href="/preparation">Preparation</Link>
           <ChevronRight style={{ height: 16, width: 16 }} />
-          <Link href={`/preparation/${type}/${id}`}>{categoryTitle}</Link>
+          <Link href={`/preparation/${type}/${id}`}>{title}</Link>
           <ChevronRight style={{ height: 16, width: 16 }} />
-          <span>{subjectName}</span>
+          <span>{currentSubject?.subjectName}</span>
         </Box>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          {subjectName}
+          {currentSubject?.subjectName}
         </Typography>
         <Typography variant="body2" color="text.secondary">Practice questions by difficulty level</Typography>
       </Box>
 
       <Tabs
-        value={difficulty}
-        onChange={(_, value) => {
-          // In a real app, this would use a router to change the URL
-          window.location.href = `?difficulty=${value}`
-        }}
+        value={difficultyLevel}
+        onChange={handleDifficultyLevelChange}
         aria-label="Difficulty tabs"
         sx={{ marginTop: 2 }}
       >
@@ -66,10 +98,10 @@ export default function SubjectQuestionsPage({ params, searchParams }: SubjectQu
 
       <Box sx={{ marginTop: 2 }}>
         {questions.map((question, index) => (
-          <QuestionCard key={question.id} question={question} number={index + 1 + (page - 1) * 10} />
+          <QuestionCard key={question?.questionId} question={question} number={index + 1 + (page - 1) * 10} />
         ))}
 
-        <Box mt={4} display="flex" justifyContent="center">
+        {/* <Box mt={4} display="flex" justifyContent="center">
           <Pagination
             count={totalPages}
             page={page}
@@ -80,7 +112,7 @@ export default function SubjectQuestionsPage({ params, searchParams }: SubjectQu
             shape="rounded"
             siblingCount={1}
           />
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   )
