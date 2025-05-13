@@ -27,7 +27,7 @@ export default function PreparationPage() {
   },[totalClassesAndStreams])
   useEffect(()=>{
     getClassesMiddleware(dispatch,ACCESS_TOKEN)
-  },[dispatch,session?.user?.accessToken])
+  },[dispatch,ACCESS_TOKEN])
   
   const  ClassCategories = () => {  
     return (

@@ -15,13 +15,12 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        {" "}
         <StoreProvider>
           <NextAuthSessionProvider>
             <div className="flex min-h-screen">
               <main className="flex-1 overflow-x-hidden">{children}</main>
             </div>
-          </NextAuthSessionProvider>{" "}
+          </NextAuthSessionProvider>
         </StoreProvider>
       </body>
     </html>
