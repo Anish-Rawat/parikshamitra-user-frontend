@@ -31,14 +31,12 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider theme={lightTheme}>
           <CssBaseline />
-          {/* <SidebarProvider> */}
             <div style={{ display: "flex", minHeight: "100vh" }}>
               <AppSidebar />
               <main style={{ flexGrow: 1, overflowY: "auto", backgroundColor: lightTheme.palette.background.default }}>
                 {children}
               </main>
             </div>
-          {/* </SidebarProvider> */}
         </ThemeProvider>
       </body>
     </html>
