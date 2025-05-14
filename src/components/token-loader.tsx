@@ -11,7 +11,6 @@ const TokenLoader = () => {
   useEffect(() => {
     // Check if session and tokens are available
     if (
-      status === "authenticated" &&
       session?.user?.accessToken &&
       session?.user?.refreshToken
     ) {
@@ -31,7 +30,7 @@ const TokenLoader = () => {
       } catch (error) {
         console.error("Error dispatching tokens:", error);
       }
-    } else if (status === "unauthenticated") {
+    } else {
       // Optionally clear tokens from store if unauthenticated
       dispatch(
         setTokens({

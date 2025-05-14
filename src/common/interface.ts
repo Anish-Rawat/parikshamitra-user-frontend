@@ -158,6 +158,10 @@ export interface User {
 
 
 export interface AuthState {
+  logout: {
+    loading: boolean;
+    error: string | null;
+  };
   tokens: TokenState;
   user: UserState;
 }

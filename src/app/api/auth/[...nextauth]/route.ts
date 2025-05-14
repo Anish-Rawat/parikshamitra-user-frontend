@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { API_URIS } from "@/utils/contant";
 import { JWT } from "next-auth/jwt";
-import { Account, Profile, User } from "@/types/interface";
+import { Account, Profile, User } from "@/common/interface";
 
 const loginUser = async ({
   email,
@@ -139,8 +139,6 @@ export const authOptions = {
           } catch (error) {
             console.error(error);
           }
-          token.accessToken = account.access_token;
-          token.id = profile.sub;
         }
         // Credentials
         if (account.provider === "credentials") {

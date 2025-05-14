@@ -3,6 +3,10 @@ import { API_URIS } from "@/utils/contant";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: AuthState = {
+  logout: {
+    loading: false,
+    error: null,
+  },
   tokens: {
     accessToken: "",
     refreshToken: "",
@@ -84,6 +88,19 @@ const authSlice = createSlice({
       };
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(logoutUser.pending, (state) => {
+        state.logout.loading = true;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.logout.loading = false;
+      })
+      .addCase(logoutUser.rejected, (state) => {
+        state.logout.loading = false;
+        state.logout.error = "Logout failed";
+      });
+  }
 });
 
 export const { setTokens, clearTokens, setUserInfo, clearUserInfo } = authSlice.actions;
