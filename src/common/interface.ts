@@ -114,53 +114,16 @@ export interface QuestionFilterStateInterface {
   limit: number;
 }
 
-export interface Account {
-  providerAccountId?: string;
-  type: string;
-  provider: string;
-  id_token?: string;
-  token_type?: string;
-  scope?: string;
-  expires_at?: number;
-  access_token?: string;
-}
-
-export interface Profile {
-  iss: string;
-  azp: string;
-  aud: string;
-  sub: string;
-  email: string;
-  email_verified: boolean;
-  at_hash: string;
-  name: string;
-  picture: string;
-  given_name: string;
-  family_name: string;
-  iat: number;
-  exp: number;
-}
-
-export interface User {
-  _id: string;
-  userName: string;
-  email: string;
-  status: "active" | "inactive";
-  testTaken: number;
-  averageScore: number;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-  refreshToken: string;
-  accessToken: string;
-}
-
-
-
+// AuthState — Redux state structure
 export interface AuthState {
+  logout: {
+    loading: boolean;
+    error: string | null;
+  };
   tokens: TokenState;
   user: UserState;
 }
+
 
 export interface TokenState {
     accessToken: string;
@@ -171,4 +134,5 @@ export interface UserState {
   userName: string;
   email: string;
   status: "active" | "inactive";
+  profilePicture: string;
 }
