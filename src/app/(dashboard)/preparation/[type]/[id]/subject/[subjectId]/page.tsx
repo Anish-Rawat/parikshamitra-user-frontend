@@ -39,6 +39,7 @@ export default function SubjectQuestionsPage({ params }: SubjectQuestionsPagePro
   const page = 1;
   console.log("subjects",subjects)
   console.log("currentClassOrStream",currentClassOrStream)
+  console.log("difficultyLevel",difficultyLevel);
   // Validate type
   if (type !== "class" && type !== "stream") {
     notFound()
