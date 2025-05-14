@@ -19,13 +19,11 @@ export default function RootLayout({
       <body>
         <StoreProvider>
           <NextAuthSessionProvider>
-            <NextAuthSessionProvider>
               <ToastContainer />
               <TokenLoader />
               <div className="flex min-h-screen">
                 <main className="flex-1 overflow-x-hidden">{children}</main>
               </div>
-            </NextAuthSessionProvider>
           </NextAuthSessionProvider>
         </StoreProvider>
       </body>
