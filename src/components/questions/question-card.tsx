@@ -1,4 +1,5 @@
-import { useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -22,31 +23,43 @@ interface QuestionCardProps {
 export function QuestionCard({ question, number }: QuestionCardProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const isCorrect = selectedOption === question.correctAnswer;
+  const [isCorrect,setIsCorrect] = useState(false)
 
   const handleSubmit = () => {
     if (selectedOption) {
+      const selectedIndex = question?.options?.indexOf(selectedOption);
+      console.log("selectedIndex",selectedIndex)
+      const selectedLetter = ["A", "B", "C", "D"][selectedIndex];
+      console.log("selectedLetter",selectedLetter)
+      setIsCorrect(selectedLetter === question.correctAnswer);
       setIsSubmitted(true);
     }
   };
+  
 
   const handleReset = () => {
     setSelectedOption(null);
     setIsSubmitted(false);
   };
-console.log("question",question?.question);
+  // console.log("question is : ", question);
+  // console.log("selectedOption is : ", selectedOption);
+  // console.log("isSubmitted: ", isSubmitted);
+  // console.log("question?.correctAnswer: ", question?.correctAnswer);
+  console.log("isCorrect: ", isCorrect);
+
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between">
+      <CardHeader
+        title={
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-purple-100 text-sm font-medium text-purple-900">
               {number}
             </div>
             <Typography variant="h6">{question?.question}</Typography>
           </div>
-
-          {isSubmitted && (
+        }
+        action={
+          isSubmitted && (
             <div className="flex items-center gap-1 text-sm">
               {isCorrect ? (
                 <>
@@ -64,9 +77,9 @@ console.log("question",question?.question);
                 </>
               )}
             </div>
-          )}
-        </div>
-      </CardHeader>
+          )
+        }
+      />
 
       <CardContent>
         <FormControl disabled={isSubmitted}>
@@ -74,29 +87,35 @@ console.log("question",question?.question);
             value={selectedOption || ""}
             onChange={(e) => setSelectedOption(e.target.value)}
           >
-            {question?.options?.map((option, index) => (
-              <FormControlLabel
-                key={index}
-                value={index.toString()}
-                control={<Radio />}
-                label={option}
-                disabled={isSubmitted}
-                style={{
-                  border:
-                    isSubmitted && index.toString() === question?.correctAnswer
+            {question?.options?.map((option, index) => {
+              const optionLetter = ["A", "B", "C", "D"][index];
+              const isCorrectAnswer =
+                isSubmitted && optionLetter === question.correctAnswer;
+              const isWrongSelected =
+                isSubmitted && selectedOption === option && !isCorrectAnswer;
+
+              return (
+                <FormControlLabel
+                  key={index}
+                  value={option}
+                  control={<Radio />}
+                  label={option}
+                  disabled={isSubmitted}
+                  style={{
+                    border: isCorrectAnswer
                       ? "2px solid green"
-                      : isSubmitted && index.toString() === selectedOption
+                      : isWrongSelected
                       ? "2px solid red"
                       : "",
-                  backgroundColor:
-                    isSubmitted && index.toString() === question?.correctAnswer
+                    backgroundColor: isCorrectAnswer
                       ? "#d4f7d4"
-                      : isSubmitted && index.toString() === selectedOption
+                      : isWrongSelected
                       ? "#fddddd"
                       : "",
-                }}
-              />
-            ))}
+                  }}
+                />
+              );
+            })}
           </RadioGroup>
         </FormControl>
       </CardContent>

@@ -53,7 +53,6 @@ export default function SubjectPage({ params }: SubjectPageProps) {
     }
   }
 
-
   return (
     <div className="container mx-auto p-4 md:p-6">
       <div className="mb-6">
@@ -69,7 +68,7 @@ export default function SubjectPage({ params }: SubjectPageProps) {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {subjects?.map((subject) => (
-          <Link href={`/preparation/${type}/${id}/subject/${subject?.subjectId}`} key={subject?.subjectId}>
+          <Link href={`/preparation/${type}/${id}/subject/${subject?.subjectId}?difficulty=easy&page=1`} key={subject?.subjectId}>
             <Card
               sx={{
                 transition: "all 0.3s",
