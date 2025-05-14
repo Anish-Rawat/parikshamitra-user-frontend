@@ -136,3 +136,17 @@ export interface UserState {
   status: "active" | "inactive";
   profilePicture: string;
 }
+
+export interface FormDataType {
+    category: string;
+    class: string;
+    subject: string;
+    difficulty: string;
+    numberOfQuestions: string,
+  };
+
+ export interface TestInfo {
+    data: Test;
+    loading: boolean;
+    error: string | null;
+ } 

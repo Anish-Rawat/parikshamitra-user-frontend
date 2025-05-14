@@ -1,53 +1,84 @@
 "use client";
 
+import ClassesAndStreams from "@/components/dashboard/all-classes";
+import Subjects from "@/components/dashboard/subjects";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { getQuestions } from "@/redux/slices/questionSlice";
+import { createTest } from "@/redux/slices/test/test.slice";
+import { RootState } from "@/redux/store";
 import React, { useState } from "react";
 
 const categories = ["Class", "Stream"];
-const classes = ["Class 6", "Class 7", "Class 8"];
-const streams = ["Medical", "Non-Medical", "Commerce", "Arts"];
-const subjects = {
-  "Class 6": ["English", "Maths", "Science"],
-  "Class 7": ["English", "Maths", "Science"],
-  Medical: ["Biology", "Chemistry", "Physics"],
-  "Non-Medical": ["Maths", "Physics", "Chemistry"],
-  Commerce: ["Accounts", "Economics", "Business Studies"],
-  Arts: ["History", "Political Science", "Geography"],
-};
 const difficulties = ["Easy", "Medium", "Hard", "Mixed"];
 
-const sampleQuestions = Array.from({ length: 20 }, (_, i) => ({
-  question: `Sample Question #${i + 1}`,
-  options: ["Option A", "Option B", "Option C", "Option D"],
-}));
 
 export default function CreateTestPage() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     category: "",
     class: "",
-    stream: "",
     subject: "",
     difficulty: "",
+    numberOfQuestions: "",
   });
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<(string | null)[]>(
     Array(20).fill(null)
   );
+  const accessTokenSelector = useAppSelector(
+    (state: RootState) => state.auth.tokens.accessToken
+  );
 
+  const dispatch = useAppDispatch();
+  const questionsSelector = useAppSelector(
+    (state: RootState) => state.question
+  )
   const handleFormChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleAnswer = (index: number, option: string) => {
-    const updatedAnswers = [...answers];
-    updatedAnswers[index] = option;
-    setAnswers(updatedAnswers);
   };
 
   const calculateResult = () => {
     const correct = answers.filter((a) => a !== null).length / 2; // Dummy logic
     return correct;
   };
+
+  const startTest = async () => {
+    if (!accessTokenSelector) {
+      return;
+    }
+    await dispatch(createTest({
+      accessToken: accessTokenSelector ?? "",
+      testName: formData.subject ?? "abcdef",
+      difficultyLevel: formData.difficulty.toLocaleLowerCase(),
+      totalQuestions: Number(formData.numberOfQuestions),
+      subjectId: formData.subject,
+      classId: formData.class
+    }));
+    await dispatch(
+      getQuestions({
+        accessToken: accessTokenSelector ?? "",
+        classId: formData.class,
+        subjectId: formData.subject,
+        difficultyLevel: formData.difficulty,
+        page: 1,
+        limit: Number(formData.numberOfQuestions),
+        searchQuestion: "",
+      })
+    );
+    setStep(2);
+  };
+
+  const handleNumberOfQuestions = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  console.log("questionsSelector",questionsSelector);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -68,55 +99,18 @@ export default function CreateTestPage() {
                 </option>
               ))}
             </select>
-            {formData.category === "Class" && (
-              <select
-                name="class"
-                value={formData.class}
-                onChange={handleFormChange}
-                className="p-3 border rounded"
-              >
-                <option value="">Select Class</option>
-                {classes.map((cls) => (
-                  <option key={cls} value={cls}>
-                    {cls}
-                  </option>
-                ))}
-              </select>
+            {formData.category && (
+              <ClassesAndStreams
+                type={formData.category}
+                setFormData={setFormData}
+                formData={formData}
+              />
             )}
 
-            {formData.category === "Stream" && (
-              <select
-                name="stream"
-                value={formData.stream}
-                onChange={handleFormChange}
-                className="p-3 border rounded"
-              >
-                <option value="">Select Stream</option>
-                {streams.map((stream) => (
-                  <option key={stream} value={stream}>
-                    {stream}
-                  </option>
-                ))}
-              </select>
+            {formData.class && (
+              <Subjects setFormData={setFormData} formData={formData} />
             )}
 
-            <select
-              name="subject"
-              value={formData.subject}
-              onChange={handleFormChange}
-              className="p-3 border rounded"
-            >
-              <option value="">Select Subject</option>
-              {(
-                subjects[formData.class] ||
-                subjects[formData.stream] ||
-                []
-              ).map((subj) => (
-                <option key={subj} value={subj}>
-                  {subj}
-                </option>
-              ))}
-            </select>
             <select
               name="difficulty"
               value={formData.difficulty}
@@ -130,9 +124,17 @@ export default function CreateTestPage() {
                 </option>
               ))}
             </select>
+            <input
+              type="number"
+              name="numberOfQuestions"
+              value={formData.numberOfQuestions}
+              onChange={handleNumberOfQuestions}
+              placeholder="Enter number of questions"
+              className="p-3 border rounded"
+            />
             <button
               className="bg-purple-600 text-white py-3 rounded hover:bg-purple-700"
-              onClick={() => setStep(2)}
+              onClick={startTest}
             >
               Start Test
             </button>
@@ -140,7 +142,7 @@ export default function CreateTestPage() {
         </div>
       )}
 
-      {step === 2 && (
+      {/* {step === 2 && (
         <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">{formData.subject} Test</h2>
@@ -197,7 +199,7 @@ export default function CreateTestPage() {
             )}
           </div>
         </div>
-      )}
+      )} */}
 
       {step === 3 && (
         <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl text-center">
@@ -234,9 +236,9 @@ export default function CreateTestPage() {
               setFormData({
                 category: "",
                 class: "",
-                stream: "",
                 subject: "",
                 difficulty: "",
+                numberOfQuestions: "",
               });
               setAnswers(Array(20).fill(null));
               setCurrentQuestion(0);

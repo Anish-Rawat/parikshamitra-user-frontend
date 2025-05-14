@@ -4,4 +4,16 @@ export const API_URIS = {
         register: "auth/register",
         logout: "auth/logout",
     },
+    classes: {
+        getClassesAndStreams: "class/get-classes",
+    },
+    subjects: {
+        getSubjects: "subject/get-subjects",
+    },
+    questions: {
+        getQuestions: "question/get-questions",
+    },
+    tests: {
+        createTest: "test/create-test"
+    }
 };
