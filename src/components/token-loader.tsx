@@ -1,5 +1,8 @@
 "use client";
-import { setTokens, setUserInfo } from "@/redux/slices/authentication/auth.slice";
+import {
+  setTokens,
+  setUserInfo,
+} from "@/redux/slices/authentication/auth.slice";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -10,11 +13,7 @@ const TokenLoader = () => {
 
   useEffect(() => {
     // Check if session and tokens are available
-    if (
-      status === "authenticated" &&
-      session?.user?.accessToken &&
-      session?.user?.refreshToken
-    ) {
+    if (session?.user?.accessToken && session?.user?.refreshToken) {
       try {
         dispatch(
           setTokens({
@@ -26,12 +25,13 @@ const TokenLoader = () => {
           userName: session?.user?.name ?? "",
           email: session?.user?.email ?? "",
           status: session?.user?.status ?? "active",
+          profilePicture: session?.user?.image ?? "",
         };
         dispatch(setUserInfo(userInfo));
       } catch (error) {
         console.error("Error dispatching tokens:", error);
       }
-    } else if (status === "unauthenticated") {
+    } else {
       // Optionally clear tokens from store if unauthenticated
       dispatch(
         setTokens({
@@ -44,6 +44,7 @@ const TokenLoader = () => {
           userName: "",
           email: "",
           status: "active",
+          profilePicture: "",
         })
       );
     }

@@ -1,9 +1,8 @@
-import NextAuth, { Session } from "next-auth";
+import NextAuth, { Account, Profile, Session, User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { API_URIS } from "@/utils/contant";
 import { JWT } from "next-auth/jwt";
-import { Account, Profile, User } from "@/types/interface";
 
 const loginUser = async ({
   email,
@@ -57,8 +56,8 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
@@ -92,9 +91,9 @@ export const authOptions = {
       user,
     }: {
       token: JWT;
-      account: Account;
+      account?: Account | null;
       profile?: Profile;
-      user: User;
+      user?: User | null;
     }) {
       // Google OAuth
       if (account) {
@@ -102,7 +101,7 @@ export const authOptions = {
           // call login api
           try {
             const res = await loginUser({
-              email: profile.email,
+              email: profile.email as string,
               password: account.id_token,
             });
             if (res.ok) {
@@ -110,14 +109,14 @@ export const authOptions = {
               token.accessToken = user.data.accessToken;
               token.refreshToken = user.data.refreshToken;
               token.email = user.data.email;
-              token.picture = profile.picture;
+              token.picture = profile?.picture as string;
               token.name = user.data.userName;
               token.id = user.data._id;
             } else {
               // register user
               const res = await registerUser({
-                email: profile.email,
-                userName: profile.name,
+                email: profile.email as string,
+                userName: profile.name as string,
                 password: account.id_token,
               });
               if (res.ok) {
@@ -139,29 +138,28 @@ export const authOptions = {
           } catch (error) {
             console.error(error);
           }
-          token.accessToken = account.access_token;
-          token.id = profile.sub;
         }
         // Credentials
         if (account.provider === "credentials") {
-          token.refreshToken = user.refreshToken;
-          token.name = user.userName;
-          token.email = user.email;
+          token.name = user?.userName;
+          token.email = user?.email;
           token.picture = "";
-          token.accessToken = user.accessToken;
-          token.id = user._id;
+          token.accessToken = user?.accessToken;
+          token.id = user?._id;
+          token.status = user?.status;
         }
       }
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
+        session.user.id = token.id;
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.picture;
         session.user.accessToken = token.accessToken;
         session.user.refreshToken = token.refreshToken;
-        session.user.status = 'active';
+        session.user.status = token.status as "active" | "inactive";
       }
       return session;
     },

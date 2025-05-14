@@ -43,6 +43,10 @@ export function AppSidebar() {
     (state: RootState) => state.auth.tokens.accessToken
   );
 
+  const logoutSelector = useAppSelector(
+    (state: RootState) => state.auth.logout
+  );
+
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -53,13 +57,14 @@ export function AppSidebar() {
 
   const handleLogout = async() => {
     handleMenuClose();
+    if (logoutSelector.loading) return;
     try {
       const res = await dispatch(
         logoutUser({ accessToken: accessTokenSelector ?? "" })
       ).unwrap();
 
       if (res.success) {
-        await signOut({ callbackUrl: "/signIn" }); // NextAuth handles cookie/session removal
+        await signOut({ callbackUrl: "/signIn" });
       } else {
         toast.error(res.message ?? "Logout failed");
       }
