@@ -15,6 +15,7 @@ const initialState: AuthState = {
     userName: "",
     email: "",
     status: "active",
+    profilePicture: "",
   },
 };
 
@@ -85,6 +86,7 @@ const authSlice = createSlice({
         userName: "",
         email: "",
         status: "active",
+        profilePicture: "",
       };
     },
   },

@@ -60,7 +60,8 @@ export function SignInForm() {
         userName: session?.user?.name ?? "",
         email: session?.user?.email ?? "",
         status: session?.user?.status ?? "active",
-      }
+        profilePicture: session?.user?.image ?? "",
+      };
       dispatch(setUserInfo(userInfo));
       redirect("/dashboard");
     }
