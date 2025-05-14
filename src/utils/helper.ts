@@ -2,6 +2,7 @@ import { getClasses } from "@/redux/slices/classSlice";
 import { getQuestions } from "@/redux/slices/questionSlice";
 import { getSubjects } from "@/redux/slices/subjectSlice";
 import { AppDispatch } from "@/redux/store";
+import { signIn } from "next-auth/react";
 
 export const getClassesMiddleware = async (
   dispatch: AppDispatch,
@@ -61,5 +62,14 @@ export const fetchQuestions = async (
     );
   } catch (err) {
     console.error("Error fetching questions:", err);
+  }
+};
+
+
+export const socialLogin = async (provider: string) => {
+  try {
+    await signIn(provider, {callbackUrl: '/dashboard'});
+  } catch (err) {
+    console.error("Error logging in:", err);
   }
 };
