@@ -41,7 +41,6 @@ export const fetchQuestions = async (
   classId: string,
   subjectId: string,
   difficultyLevel: string,
-  searchQuestion: string,
   page: number,
   limit: number
 ) => {
@@ -56,7 +55,6 @@ export const fetchQuestions = async (
         classId,
         subjectId,
         difficultyLevel: difficulty,
-        searchQuestion,
         page,
         limit,
       })

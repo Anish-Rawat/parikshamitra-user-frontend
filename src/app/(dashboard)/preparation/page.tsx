@@ -12,6 +12,7 @@ import { ClassInterface } from "@/common/interface";
 import { useAppSelector } from "@/lib/hooks";
 import { ACCESS_TOKEN } from "@/utils/constants";
 
+
 export default function PreparationPage() {
   const [tabValue, setTabValue] = useState("classes");
   const dispatch = useDispatch<AppDispatch>();
@@ -27,7 +28,7 @@ export default function PreparationPage() {
   },[totalClassesAndStreams])
   useEffect(()=>{
     getClassesMiddleware(dispatch,ACCESS_TOKEN)
-  },[dispatch,session?.user?.accessToken])
+  },[dispatch,ACCESS_TOKEN])
   
   const  ClassCategories = () => {  
     return (

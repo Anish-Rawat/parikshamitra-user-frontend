@@ -1,7 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import classReducer from './slices/classSlice'
-import subjectReducer from './slices/subjectSlice'
-import QuestionReducer from './slices/questionSlice'
+import classReducer from '../redux/slices/classSlice'
+import subjectReducer from '../redux/slices/subjectSlice'
+import QuestionReducer from '../redux/slices/questionSlice'
+import authReducer from '../redux/slices/authentication/auth.slice'
 
 export const makeStore = () => {
   return configureStore({
@@ -9,7 +10,7 @@ export const makeStore = () => {
       class:classReducer,
       subject: subjectReducer,
       question:QuestionReducer,
-
+      auth: authReducer,
     },
   })
 }
