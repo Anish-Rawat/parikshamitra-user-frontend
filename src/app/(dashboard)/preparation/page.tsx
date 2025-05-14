@@ -2,7 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Box, Card, CardContent, CardHeader, Typography, Tab, Tabs } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Typography,
+  Tab,
+  Tabs,
+} from "@mui/material";
 import { TabPanel, TabContext } from "@mui/lab";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
@@ -11,29 +19,36 @@ import { getClassesMiddleware } from "@/utils/helper";
 import { ClassInterface } from "@/common/interface";
 import { useAppSelector } from "@/lib/hooks";
 import { ACCESS_TOKEN } from "@/utils/constants";
-
+import Loader from "@/components/common/loader";
 
 export default function PreparationPage() {
   const [tabValue, setTabValue] = useState("classes");
   const dispatch = useDispatch<AppDispatch>();
-  const {data:session} = useSession();
-  const totalClassesAndStreams  = useAppSelector((state)=>state.class.data)
-  const totalClasses = useMemo(()=>{
-    const classes = totalClassesAndStreams?.filter((cls:ClassInterface)=>cls?.category==='class')
+  const { data: session } = useSession();
+  const totalClassesAndStreams = useAppSelector((state) => state.class.data);
+  const isClassesAndStreamsLoading = useAppSelector(
+    (state) => state.class.loading
+  );
+  const totalClasses = useMemo(() => {
+    const classes = totalClassesAndStreams?.filter(
+      (cls: ClassInterface) => cls?.category === "class"
+    );
     return classes;
-  },[totalClassesAndStreams])
-  const totalStreams = useMemo(()=>{
-    const streams = totalClassesAndStreams?.filter((cls:ClassInterface)=>cls?.category==='stream')
+  }, [totalClassesAndStreams]);
+  const totalStreams = useMemo(() => {
+    const streams = totalClassesAndStreams?.filter(
+      (cls: ClassInterface) => cls?.category === "stream"
+    );
     return streams;
-  },[totalClassesAndStreams])
-  useEffect(()=>{
-    getClassesMiddleware(dispatch,ACCESS_TOKEN)
-  },[dispatch,ACCESS_TOKEN])
-  
-  const  ClassCategories = () => {  
+  }, [totalClassesAndStreams]);
+  useEffect(() => {
+    getClassesMiddleware(dispatch, ACCESS_TOKEN);
+  }, [dispatch, ACCESS_TOKEN]);
+
+  const ClassCategories = () => {
     return (
       <>
-        {totalClasses?.map((cls:ClassInterface) => (
+        {totalClasses?.map((cls: ClassInterface) => (
           <Link href={`/preparation/class/${cls?.classId}`} key={cls?.classId}>
             <Card
               sx={{
@@ -43,8 +58,14 @@ export default function PreparationPage() {
               }}
             >
               <CardHeader
-                title={<Typography variant="h6">{cls?.className} Class</Typography>}
-                subheader={<Typography variant="body2">{cls?.totalSubjects} subjects available</Typography>}
+                title={
+                  <Typography variant="h6">{cls?.className} Class</Typography>
+                }
+                subheader={
+                  <Typography variant="body2">
+                    {cls?.totalSubjects} subjects available
+                  </Typography>
+                }
               />
               <CardContent>
                 <Typography variant="body2" color="textSecondary">
@@ -56,14 +77,16 @@ export default function PreparationPage() {
         ))}
       </>
     );
-  }
-  
-  const  StreamCategories = () => {
-    
+  };
+
+  const StreamCategories = () => {
     return (
       <>
         {totalStreams.map((stream: ClassInterface) => (
-          <Link href={`/preparation/stream/${stream?.classId}`} key={stream?.classId}>
+          <Link
+            href={`/preparation/stream/${stream?.classId}`}
+            key={stream?.classId}
+          >
             <Card
               sx={{
                 transition: "all 0.3s",
@@ -72,8 +95,14 @@ export default function PreparationPage() {
               }}
             >
               <CardHeader
-                title={<Typography variant="h6">{stream?.className}</Typography>}
-                subheader={<Typography variant="body2">{stream?.totalSubjects} subjects available</Typography>}
+                title={
+                  <Typography variant="h6">{stream?.className}</Typography>
+                }
+                subheader={
+                  <Typography variant="body2">
+                    {stream?.totalSubjects} subjects available
+                  </Typography>
+                }
               />
               <CardContent>
                 <Typography variant="body2" color="textSecondary">
@@ -85,7 +114,7 @@ export default function PreparationPage() {
         ))}
       </>
     );
-  }
+  };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
@@ -114,19 +143,23 @@ export default function PreparationPage() {
           <Tab label="Streams" value="streams" />
         </Tabs>
 
-        <Box className="mt-6">
-          <TabPanel value="classes">
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <ClassCategories />
-            </div>
-          </TabPanel>
+        {isClassesAndStreamsLoading ? (
+          <Loader message="Fetching Classes..."  />
+        ) : (
+          <Box className="mt-6">
+            <TabPanel value="classes">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <ClassCategories />
+              </div>
+            </TabPanel>
 
-          <TabPanel value="streams">
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <StreamCategories />
-            </div>
-          </TabPanel>
-        </Box>
+            <TabPanel value="streams">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <StreamCategories />
+              </div>
+            </TabPanel>
+          </Box>
+        )}
       </TabContext>
     </Box>
   );
