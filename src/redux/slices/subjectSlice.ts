@@ -19,7 +19,7 @@ import {
       if(classId) endUrl.append("classId",classId)
       endUrl.append("page",String(page))
       endUrl.append("limit",String(limit))
-      const filteredSubjectApiResponse = await fetch(`${process.env.NEXT_PUBLIC_DEV_BASE_URL}/admin/subject/get-subjects?${endUrl}`,
+      const filteredSubjectApiResponse = await fetch(`${process.env.NEXT_PUBLIC_DEV_BASE_URL}/subject/get-subjects?${endUrl}`,
         {
           method:"GET",
           headers:{

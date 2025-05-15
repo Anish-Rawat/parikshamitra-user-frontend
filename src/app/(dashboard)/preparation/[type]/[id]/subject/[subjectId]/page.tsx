@@ -13,7 +13,7 @@ import {
 } from "@/utils/helper";
 import { ACCESS_TOKEN } from "@/utils/constants";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { useSession } from "next-auth/react";
 import { useAppSelector } from "@/lib/hooks";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -47,6 +47,7 @@ export default function SubjectQuestionsPage({
   const [page, setPage] = useState(pageParam);
   const dispatch = useDispatch<AppDispatch>();
   const { data: session } = useSession();
+      const accessToken = useAppSelector((state:RootState)=>state.auth.tokens.accessToken)
   const totalClassesAndStreams = useAppSelector((state) => state.class.data);
   const subjects = useAppSelector((state) => state.subject.data);
   const questions = useAppSelector((state) => state.question.data);
@@ -75,20 +76,25 @@ export default function SubjectQuestionsPage({
   };
   console.log("questions", questions);
   useEffect(() => {
-    getClassesMiddleware(dispatch, ACCESS_TOKEN);
-    filteredSubjects(dispatch, ACCESS_TOKEN, id, page, limit);
-  }, [dispatch, id, ACCESS_TOKEN, subjectId, difficultyParam, page]);
+    if(accessToken){
+      getClassesMiddleware(dispatch, accessToken);
+    filteredSubjects(dispatch, accessToken, id, page, limit);
+    }
+  }, [dispatch, id, accessToken, subjectId, difficultyParam, page]);
   useEffect(() => {
-    fetchQuestions(
-      dispatch,
-      ACCESS_TOKEN,
-      id,
-      subjectId,
-      difficultyLevel,
-      page,
-      limit
-    );
-  }, [dispatch, id, ACCESS_TOKEN, subjectId, difficultyParam, page]);
+    console.log("Fetching que here",accessToken)
+    if(accessToken){
+      fetchQuestions(
+        dispatch,
+        accessToken,
+        id,
+        subjectId,
+        difficultyLevel,
+        page,
+        limit
+      );
+    }
+  }, [dispatch, id, accessToken, subjectId, difficultyParam, page]);
   // Sync state with URL parameters on initial load and when URL changes
   useEffect(() => {
     setDifficultyLevel(difficultyParam);

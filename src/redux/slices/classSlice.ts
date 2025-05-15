@@ -15,7 +15,7 @@ import {
     "getClasses",
     async ({ accessToken }: { accessToken: string }) => {
       const getClassesApiResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_DEV_BASE_URL}/admin/class/get-classes`,
+        `${process.env.NEXT_PUBLIC_DEV_BASE_URL}/class/get-classes`,
         {
           method: "GET",
           headers: {

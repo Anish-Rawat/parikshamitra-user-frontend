@@ -39,7 +39,7 @@ import {
       endUrl.append("page", String(page));
       endUrl.append("limit", String(limit));
       const getQuestionsApiResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_DEV_BASE_URL}/admin/question/get-questions?${endUrl}`,
+        `${process.env.NEXT_PUBLIC_DEV_BASE_URL}/question/get-questions?${endUrl}`,
         {
           method: "GET",
           headers: {

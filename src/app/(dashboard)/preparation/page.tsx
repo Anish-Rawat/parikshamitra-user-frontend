@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { TabPanel, TabContext } from "@mui/lab";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { useSession } from "next-auth/react";
 import { getClassesMiddleware } from "@/utils/helper";
 import { ClassInterface } from "@/common/interface";
@@ -25,6 +25,8 @@ export default function PreparationPage() {
   const [tabValue, setTabValue] = useState("classes");
   const dispatch = useDispatch<AppDispatch>();
   const { data: session } = useSession();
+  const accessToken = useAppSelector((state:RootState)=>state.auth.tokens.accessToken)
+  console.log("access",accessToken)
   const totalClassesAndStreams = useAppSelector((state) => state.class.data);
   const isClassesAndStreamsLoading = useAppSelector(
     (state) => state.class.loading
@@ -42,8 +44,10 @@ export default function PreparationPage() {
     return streams;
   }, [totalClassesAndStreams]);
   useEffect(() => {
-    getClassesMiddleware(dispatch, ACCESS_TOKEN);
-  }, [dispatch, ACCESS_TOKEN]);
+    if(accessToken){
+      getClassesMiddleware(dispatch,accessToken );
+    }
+  }, [dispatch,accessToken]);
 
   const ClassCategories = () => {
     return (

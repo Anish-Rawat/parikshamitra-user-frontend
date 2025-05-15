@@ -146,6 +146,7 @@ export const authOptions = {
           token.picture = "";
           token.accessToken = user?.accessToken;
           token.id = user?._id;
+          token.refreshToken = user?.refreshToken;
           token.status = user?.status;
         }
       }
