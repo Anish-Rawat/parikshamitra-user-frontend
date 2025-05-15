@@ -50,7 +50,6 @@ import { API_URIS } from "@/utils/contant";
         }
       );
       const getQuestionsApiJsonResponse = await getQuestionsApiResponse.json();
-      console.log(getQuestionsApiJsonResponse)
       return getQuestionsApiJsonResponse;
     }
   );
@@ -69,13 +68,14 @@ import { API_URIS } from "@/utils/contant";
           state.loading = false;
           const transformedData: QuestionInterface[] = action?.payload?.data?.result?.map(
             (que: ApiResponseQuestionInterface) => {
-              const { _id,subjectInfo,classInfo,classId,subjectId, ...rest } = que;
+              const { _id, timeLeft = 30,subjectInfo,classInfo,classId,subjectId, ...rest } = que;
               return {
                 questionId: _id,
                 subjectName: subjectInfo?.subjectName,
                 className:classInfo?.className,
                 classId:classInfo?._id,
                 subjectId:subjectInfo?._id,
+                timeLeft,
                 ...rest,
               };
             }

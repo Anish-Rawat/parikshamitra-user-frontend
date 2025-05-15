@@ -103,6 +103,7 @@ export interface ApiResponseQuestionInterface extends QuestionInterface {
     _id: string;
     className: string;
   };
+  timeLeft: number;
 }
 
 export interface QuestionFilterStateInterface {
@@ -150,3 +151,8 @@ export interface FormDataType {
     loading: boolean;
     error: string | null;
  } 
+
+ export interface TestAnswers {
+  questionId: string;
+  answer: string;
+}

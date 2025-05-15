@@ -7,10 +7,11 @@ import { getQuestions } from "@/redux/slices/questionSlice";
 import { createTest } from "@/redux/slices/test/test.slice";
 import { RootState } from "@/redux/store";
 import React, { useState } from "react";
-
-const categories = ["Class", "Stream"];
-const difficulties = ["Easy", "Medium", "Hard", "Mixed"];
-
+import {
+  CATEGORIES as categories,
+  DIFFICULITES as difficulties,
+} from "@/utils/mockData";
+import { useRouter } from "next/navigation";
 
 export default function CreateTestPage() {
   const [step, setStep] = useState(1);
@@ -21,39 +22,37 @@ export default function CreateTestPage() {
     difficulty: "",
     numberOfQuestions: "",
   });
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<(string | null)[]>(
-    Array(20).fill(null)
-  );
   const accessTokenSelector = useAppSelector(
     (state: RootState) => state.auth.tokens.accessToken
   );
-
+  const testSelector = useAppSelector((state: RootState) => state.test);
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const questionsSelector = useAppSelector(
     (state: RootState) => state.question
-  )
+  );
   const handleFormChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const calculateResult = () => {
-    const correct = answers.filter((a) => a !== null).length / 2; // Dummy logic
-    return correct;
-  };
-
   const startTest = async () => {
-    if (!accessTokenSelector) {
+    if (
+      !accessTokenSelector ||
+      testSelector.loading ||
+      questionsSelector.loading
+    ) {
       return;
     }
-    await dispatch(createTest({
-      accessToken: accessTokenSelector ?? "",
-      testName: formData.subject ?? "abcdef",
-      difficultyLevel: formData.difficulty.toLocaleLowerCase(),
-      totalQuestions: Number(formData.numberOfQuestions),
-      subjectId: formData.subject,
-      classId: formData.class
-    }));
+
+    await dispatch(
+      createTest({
+        accessToken: accessTokenSelector ?? "",
+        testName: formData.subject ?? "abcdef",
+        difficultyLevel: formData.difficulty.toLocaleLowerCase(),
+        totalQuestions: Number(formData.numberOfQuestions),
+        subjectId: formData.subject,
+        classId: formData.class,
+      })
+    );
     await dispatch(
       getQuestions({
         accessToken: accessTokenSelector ?? "",
@@ -65,7 +64,8 @@ export default function CreateTestPage() {
         searchQuestion: "",
       })
     );
-    setStep(2);
+    // setStep(2);
+    router.push(`/question/${questionsSelector.data[0].questionId}`);
   };
 
   const handleNumberOfQuestions = (
@@ -77,8 +77,6 @@ export default function CreateTestPage() {
       [name]: value,
     }));
   };
-
-  console.log("questionsSelector",questionsSelector);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -142,74 +140,15 @@ export default function CreateTestPage() {
         </div>
       )}
 
-      {/* {step === 2 && (
-        <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">{formData.subject} Test</h2>
-            <span>{30 - Math.floor((currentQuestion / 20) * 30)}:00</span>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">
-              {sampleQuestions[currentQuestion].question}
-            </h3>
-            <div className="flex flex-col gap-3">
-              {sampleQuestions[currentQuestion].options.map((opt, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleAnswer(currentQuestion, opt)}
-                  className={`border rounded p-3 text-left ${
-                    answers[currentQuestion] === opt
-                      ? "bg-purple-100 border-purple-500"
-                      : "bg-white"
-                  }`}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex justify-between items-center mt-6">
-            <button
-              onClick={() =>
-                setCurrentQuestion((prev) => Math.max(prev - 1, 0))
-              }
-              className="bg-gray-300 px-4 py-2 rounded"
-              disabled={currentQuestion === 0}
-            >
-              Previous
-            </button>
-            {currentQuestion === sampleQuestions.length - 1 ? (
-              <button
-                onClick={() => setStep(3)}
-                className="bg-purple-600 text-white px-4 py-2 rounded"
-              >
-                Submit Test
-              </button>
-            ) : (
-              <button
-                onClick={() =>
-                  setCurrentQuestion((prev) =>
-                    Math.min(prev + 1, sampleQuestions.length - 1)
-                  )
-                }
-                className="bg-purple-600 text-white px-4 py-2 rounded"
-              >
-                Next
-              </button>
-            )}
-          </div>
-        </div>
-      )} */}
-
       {step === 3 && (
         <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl text-center">
           <h1 className="text-3xl font-bold mb-2">Test Completed!</h1>
-          <h2 className="text-5xl text-purple-600 font-bold mb-4">
+          {/* <h2 className="text-5xl text-purple-600 font-bold mb-4">
             {Math.floor((calculateResult() / 20) * 100)}%
-          </h2>
-          <p className="mb-4">
+          </h2> */}
+          {/* <p className="mb-4">
             You scored {calculateResult()} out of 20 questions
-          </p>
+          </p> */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
               <h4 className="font-bold">Total Questions</h4>
@@ -217,17 +156,13 @@ export default function CreateTestPage() {
             </div>
             <div>
               <h4 className="font-bold">Attempted</h4>
-              <p>{answers.filter((a) => a !== null).length}</p>
             </div>
             <div>
               <h4 className="font-bold">Correct</h4>
-              <p>{calculateResult()}</p>
+              {/* <p>{calculateResult()}</p> */}
             </div>
             <div>
               <h4 className="font-bold">Incorrect</h4>
-              <p>
-                {answers.filter((a) => a !== null).length - calculateResult()}
-              </p>
             </div>
           </div>
           <button
@@ -240,8 +175,7 @@ export default function CreateTestPage() {
                 difficulty: "",
                 numberOfQuestions: "",
               });
-              setAnswers(Array(20).fill(null));
-              setCurrentQuestion(0);
+              // setCurrentQuestion(0);
               setStep(1);
             }}
           >

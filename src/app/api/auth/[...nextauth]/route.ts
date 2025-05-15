@@ -145,6 +145,7 @@ export const authOptions = {
           token.email = user?.email;
           token.picture = "";
           token.accessToken = user?.accessToken;
+          token.refreshToken = user?.refreshToken;
           token.id = user?._id;
           token.status = user?.status;
         }
