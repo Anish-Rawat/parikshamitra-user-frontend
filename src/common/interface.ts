@@ -125,10 +125,9 @@ export interface AuthState {
   user: UserState;
 }
 
-
 export interface TokenState {
-    accessToken: string;
-    refreshToken: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface UserState {
@@ -139,20 +138,51 @@ export interface UserState {
 }
 
 export interface FormDataType {
-    category: string;
-    class: string;
-    subject: string;
-    difficulty: string;
-    numberOfQuestions: string,
-  };
+  category: string;
+  class: string;
+  subject: string;
+  difficulty: string;
+  numberOfQuestions: string;
+  testName: string;
+}
 
- export interface TestInfo {
-    data: Test;
-    loading: boolean;
-    error: string | null;
- } 
+export interface TestInfo {
+  createTest: CreateTestState;
+  submitTest: SubmitTestState;
+}
 
- export interface TestAnswers {
+interface CreateTestState {
+  data: Test;
+  loading: boolean;
+  error: string | null;
+}
+
+interface EvaluatedAnswer {
+  correctAnswer: number;
+  isCorrect: boolean;
+  questionId: string;
+  submittedAnswer: string;
+}
+
+interface SubmitTestData {
+  evaluatedAnswers: EvaluatedAnswer[];
+  message: string;
+  success: boolean;
+  totalScore: number;
+}
+
+interface SubmitTestState {
+  data: SubmitTestData;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface TestAnswers {
   questionId: string;
   answer: string;
+}
+
+export interface SelectTestInfoProps {
+  setFormData: React.Dispatch<React.SetStateAction<FormDataType>>;
+  formData: FormDataType;
 }

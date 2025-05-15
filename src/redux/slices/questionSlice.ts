@@ -3,7 +3,7 @@ import {
     QuestionInterface,
     QuestionState,
   } from "@/common/interface";
-import { API_URIS } from "@/utils/contant";
+import { API_URIS } from "@/utils/constant";
   import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
   
   const initialState: QuestionState = {

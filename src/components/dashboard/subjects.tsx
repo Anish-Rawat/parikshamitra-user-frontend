@@ -1,4 +1,4 @@
-import { FormDataType } from "@/common/interface";
+import { SelectTestInfoProps } from "@/common/interface";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { getSubjects } from "@/redux/slices/subjectSlice";
 import { RootState } from "@/redux/store";
@@ -8,12 +8,7 @@ import { toast } from "react-toastify";
 
 const LIMIT = 10;
 
-interface SubjectsProps {
-    setFormData: React.Dispatch<React.SetStateAction<FormDataType>>;
-    formData: FormDataType;
-}
-
-const Subjects:React.FC<SubjectsProps> = ({setFormData, formData}) => {
+const SelectSubjects:React.FC<SelectTestInfoProps> = ({setFormData, formData}) => {
   const dispatch = useAppDispatch();
   const accessTokenSelector = useAppSelector(
     (state: RootState) => state.auth.tokens.accessToken
@@ -50,7 +45,8 @@ const Subjects:React.FC<SubjectsProps> = ({setFormData, formData}) => {
   return (
     <select
       name="subject"
-      disabled={subjectsSelector.loading}
+      required
+      disabled={subjectsSelector.loading || !formData.class}
       value={formData.subject}
       onChange={handleFormChange}
       className="p-3 border rounded"
@@ -65,4 +61,4 @@ const Subjects:React.FC<SubjectsProps> = ({setFormData, formData}) => {
   );
 };
 
-export default Subjects;
+export default SelectSubjects;

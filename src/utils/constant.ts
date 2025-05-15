@@ -14,6 +14,7 @@ export const API_URIS = {
         getQuestions: "question/get-questions",
     },
     tests: {
-        createTest: "test/create-test"
+        createTest: "test/create-test",
+        submitTest: "test/submit-test"
     }
 };

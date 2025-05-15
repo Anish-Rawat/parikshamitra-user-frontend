@@ -1,36 +1,74 @@
-'use client';
+"use client";
 
 import useTimer from "@/hooks/useTimer";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setAnswers } from "@/redux/slices/test/answer.slice";
+import { submitTest } from "@/redux/slices/test/test.slice";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const TOTAL_TIMER = 30;
+const optionLetters = ["A", "B", "C", "D"];
+
 
 const Questions = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const timer = useTimer({ totalTimer: TOTAL_TIMER });
-
+  const accessTokenSelector = useAppSelector(
+    (state: RootState) => state.auth.tokens.accessToken
+  );
   const questionsSelector = useAppSelector(
     (state: RootState) => state.question
   );
   const testAnswersSelector = useAppSelector(
     (state: RootState) => state.answer
   );
+  const testSelector = useAppSelector(
+    (state: RootState) => state.test.createTest
+  );
   const questions = questionsSelector.data;
 
   const handleAnswer = (questionId: string | undefined, answer: string) => {
     if (!questionId) return;
+
     dispatch(setAnswers({ questionId, answer }));
   };
 
+
+  const handleSubmitTest = async () => {
+    if (
+      !accessTokenSelector ||
+      testSelector.loading ||
+      questionsSelector.loading
+    ) {
+      return;
+    }
+    try {
+      const testId = testSelector.data._id;
+      await dispatch(
+        submitTest({
+          accessToken: accessTokenSelector ?? "",
+          testId,
+          answers: testAnswersSelector,
+        })
+      );
+    } catch (error) {
+      console.error(error);
+      toast.error("Error submitting test");
+    }
+    router.push("/test-score");
+  };
+
   useEffect(() => {
-    if (timer === 0) {
+    if (timer === 0 && currentQuestion < questions.length - 1) {
       handleNextQuestion();
+    }
+    if (timer === 0 && currentQuestion === questions.length - 1) {
+      handleSubmitTest();
     }
   }, [timer]);
 
@@ -54,14 +92,19 @@ const Questions = () => {
             <button
               key={idx}
               onClick={() =>
-                handleAnswer(questions[currentQuestion].questionId, opt)
+                handleAnswer(
+                  questions[currentQuestion].questionId,
+                  optionLetters[idx]
+                )
               }
               className={`border rounded p-3 text-left cursor-pointer ${
-                testAnswersSelector[currentQuestion]?.answer === opt
+                testAnswersSelector[currentQuestion]?.answer ===
+                optionLetters[idx]
                   ? "bg-purple-100 border-purple-500"
                   : "bg-white"
               }`}
             >
+              <span className="font-semibold mr-2">{optionLetters[idx]}.</span>{" "}
               {opt}
             </button>
           ))}
@@ -77,7 +120,7 @@ const Questions = () => {
         </button>
         {currentQuestion === questions.length - 1 ? (
           <button
-            // onClick={handleSubmitTest}
+            onClick={handleSubmitTest}
             className={`bg-purple-600 text-white px-4 py-2 rounded`}
           >
             Submit Test

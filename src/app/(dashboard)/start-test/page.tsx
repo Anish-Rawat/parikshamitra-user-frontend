@@ -1,26 +1,25 @@
 "use client";
 
-import ClassesAndStreams from "@/components/dashboard/all-classes";
 import Subjects from "@/components/dashboard/subjects";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { getQuestions } from "@/redux/slices/questionSlice";
 import { createTest } from "@/redux/slices/test/test.slice";
 import { RootState } from "@/redux/store";
 import React, { useState } from "react";
-import {
-  CATEGORIES as categories,
-  DIFFICULITES as difficulties,
-} from "@/utils/mockData";
 import { useRouter } from "next/navigation";
+import SelectClassesAndStreams from "@/components/dashboard/all-classes";
+import SelectCategory from "@/components/dashboard/category";
+import SelectDifficulty from "@/components/dashboard/difficulty";
+import { toast } from "react-toastify";
 
 export default function CreateTestPage() {
-  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     category: "",
     class: "",
     subject: "",
     difficulty: "",
     numberOfQuestions: "",
+    testName: "",
   });
   const accessTokenSelector = useAppSelector(
     (state: RootState) => state.auth.tokens.accessToken
@@ -31,158 +30,111 @@ export default function CreateTestPage() {
   const questionsSelector = useAppSelector(
     (state: RootState) => state.question
   );
-  const handleFormChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const validateForm = () => {
+    if (
+      [
+        formData.category,
+        formData.class,
+        formData.subject,
+        formData.difficulty,
+        formData.numberOfQuestions,
+      ].includes("")
+    ) {
+      return false;
+    }
+    return true;
   };
-  const startTest = async () => {
+
+  const startTest = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (
       !accessTokenSelector ||
-      testSelector.loading ||
+      testSelector.createTest.loading ||
       questionsSelector.loading
     ) {
       return;
     }
-
-    await dispatch(
-      createTest({
-        accessToken: accessTokenSelector ?? "",
-        testName: formData.subject ?? "abcdef",
-        difficultyLevel: formData.difficulty.toLocaleLowerCase(),
-        totalQuestions: Number(formData.numberOfQuestions),
-        subjectId: formData.subject,
-        classId: formData.class,
-      })
-    );
-    await dispatch(
-      getQuestions({
-        accessToken: accessTokenSelector ?? "",
-        classId: formData.class,
-        subjectId: formData.subject,
-        difficultyLevel: formData.difficulty,
-        page: 1,
-        limit: Number(formData.numberOfQuestions),
-        searchQuestion: "",
-      })
-    );
-    // setStep(2);
-    router.push(`/question/${questionsSelector.data[0].questionId}`);
+    validateForm();
+    try {
+      await dispatch(
+        createTest({
+          accessToken: accessTokenSelector ?? "",
+          testName: formData.subject ?? "abcdef",
+          difficultyLevel: formData.difficulty.toLocaleLowerCase(),
+          totalQuestions: Number(formData.numberOfQuestions),
+          subjectId: formData.subject,
+          classId: formData.class,
+        })
+      );
+      const questions = await dispatch(
+        getQuestions({
+          accessToken: accessTokenSelector ?? "",
+          classId: formData.class,
+          subjectId: formData.subject,
+          difficultyLevel: formData.difficulty,
+          page: 1,
+          limit: Number(formData.numberOfQuestions),
+          searchQuestion: "",
+        })
+      ).unwrap();
+      if (questions.data.result.length === 0) {
+        toast.error("No questions found");
+        return;
+      }
+      const questionId = questions.data.result[0]._id;
+      router.push(`/question/${questionId}`);
+    }
+    catch (error) {
+      toast.error("Error creating test");
+      console.error("Error creating test:", error);
+    }
   };
 
-  const handleNumberOfQuestions = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+    const handleFormInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      {step === 1 && (
-        <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl">
-          <h1 className="text-3xl font-bold mb-4">Start Test</h1>
-          <div className="grid grid-cols-1 gap-4">
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleFormChange}
-              className="p-3 border rounded"
-            >
-              <option value="">Select Category</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-            {formData.category && (
-              <ClassesAndStreams
-                type={formData.category}
-                setFormData={setFormData}
-                formData={formData}
-              />
-            )}
+      <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl">
+        <h1 className="text-3xl font-bold mb-4">Start Test</h1>
+        <form className="grid grid-cols-1 gap-4" onSubmit={(e) => startTest(e)}>
+          <input
+            type="string"
+            name="testName"
+            required
+            value={formData.testName}
+            onChange={(e) => handleFormInputChange(e)}
+            placeholder="Enter Test Name"
+            className="p-3 border rounded"
+          />
+          <SelectCategory setFormData={setFormData} formData={formData} />
+          <SelectClassesAndStreams
+            setFormData={setFormData}
+            formData={formData}
+          />
 
-            {formData.class && (
-              <Subjects setFormData={setFormData} formData={formData} />
-            )}
+          <Subjects setFormData={setFormData} formData={formData} />
+          <SelectDifficulty setFormData={setFormData} formData={formData} />
 
-            <select
-              name="difficulty"
-              value={formData.difficulty}
-              onChange={handleFormChange}
-              className="p-3 border rounded"
-            >
-              <option value="">Select Difficulty</option>
-              {difficulties.map((diff) => (
-                <option key={diff} value={diff}>
-                  {diff}
-                </option>
-              ))}
-            </select>
-            <input
-              type="number"
-              name="numberOfQuestions"
-              value={formData.numberOfQuestions}
-              onChange={handleNumberOfQuestions}
-              placeholder="Enter number of questions"
-              className="p-3 border rounded"
-            />
-            <button
-              className="bg-purple-600 text-white py-3 rounded hover:bg-purple-700"
-              onClick={startTest}
-            >
-              Start Test
-            </button>
-          </div>
-        </div>
-      )}
-
-      {step === 3 && (
-        <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl text-center">
-          <h1 className="text-3xl font-bold mb-2">Test Completed!</h1>
-          {/* <h2 className="text-5xl text-purple-600 font-bold mb-4">
-            {Math.floor((calculateResult() / 20) * 100)}%
-          </h2> */}
-          {/* <p className="mb-4">
-            You scored {calculateResult()} out of 20 questions
-          </p> */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <h4 className="font-bold">Total Questions</h4>
-              <p>20</p>
-            </div>
-            <div>
-              <h4 className="font-bold">Attempted</h4>
-            </div>
-            <div>
-              <h4 className="font-bold">Correct</h4>
-              {/* <p>{calculateResult()}</p> */}
-            </div>
-            <div>
-              <h4 className="font-bold">Incorrect</h4>
-            </div>
-          </div>
+          <input
+            type="number"
+            required
+            name="numberOfQuestions"
+            value={formData.numberOfQuestions}
+            onChange={(e) => handleFormInputChange(e)}
+            placeholder="Enter number of questions"
+            className="p-3 border rounded"
+          />
           <button
-            className="bg-purple-600 text-white px-6 py-3 rounded"
-            onClick={() => {
-              setFormData({
-                category: "",
-                class: "",
-                subject: "",
-                difficulty: "",
-                numberOfQuestions: "",
-              });
-              // setCurrentQuestion(0);
-              setStep(1);
-            }}
+            className="bg-purple-600 text-white py-3 rounded hover:bg-purple-700"
+            type="submit"
           >
-            Start New Test
+            Start Test
           </button>
-        </div>
-      )}
+        </form>
+      </div>
     </div>
   );
 }

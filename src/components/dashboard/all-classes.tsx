@@ -1,18 +1,11 @@
-import { FormDataType } from "@/common/interface";
+import { SelectTestInfoProps } from "@/common/interface";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { getClasses } from "@/redux/slices/classSlice";
 import { RootState } from "@/redux/store";
 import React from "react";
 import { toast } from "react-toastify";
 
-interface ClassesAndStreamsProps {
-  type: string;
-  setFormData: React.Dispatch<React.SetStateAction<FormDataType>>;
-  formData: FormDataType;
-}
-
-const ClassesAndStreams: React.FC<ClassesAndStreamsProps> = ({
-  type,
+const SelectClassesAndStreams: React.FC<SelectTestInfoProps> = ({
   setFormData,
   formData,
 }) => {
@@ -55,24 +48,25 @@ const ClassesAndStreams: React.FC<ClassesAndStreamsProps> = ({
 
   React.useEffect(() => {
     getAllClassesAndStreams();
-  }, [accessTokenSelector, type]);
+  }, [accessTokenSelector]);
 
   return (
     <select
-      disabled={!type}
+      disabled={!formData.category}
       name="class"
+      required
       value={selectedClass}
       onChange={handleFormChange}
       className="p-3 border rounded"
     >
-      <option value="">Select {type}</option>
-      {type === "Stream" &&
+      <option value="">Select {formData.category}</option>
+      {formData.category === "Stream" &&
         streams.map((cls) => (
           <option key={cls.classId} value={cls.classId}>
             {cls.className}
           </option>
         ))}
-      {type === "Class" &&
+      {formData.category === "Class" &&
         classes.map((cls) => (
           <option key={cls.classId} value={cls.classId}>
             {cls.className}
@@ -82,4 +76,4 @@ const ClassesAndStreams: React.FC<ClassesAndStreamsProps> = ({
   );
 };
 
-export default ClassesAndStreams;
+export default SelectClassesAndStreams;
