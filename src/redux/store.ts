@@ -3,6 +3,8 @@ import classReducer from '../redux/slices/classSlice'
 import subjectReducer from '../redux/slices/subjectSlice'
 import QuestionReducer from '../redux/slices/questionSlice'
 import authReducer from '../redux/slices/authentication/auth.slice'
+import testReducer from '../redux/slices/test/test.slice'
+import answerReducer from '../redux/slices/test/answer.slice'
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +13,8 @@ export const makeStore = () => {
       subject: subjectReducer,
       question:QuestionReducer,
       auth: authReducer,
+      test: testReducer,
+      answer: answerReducer
     },
   })
 }

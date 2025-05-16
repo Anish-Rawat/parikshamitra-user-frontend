@@ -1,7 +1,7 @@
 import NextAuth, { Account, Profile, Session, User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { API_URIS } from "@/utils/contant";
+import { API_URIS } from "@/utils/constant";
 import { JWT } from "next-auth/jwt";
 
 const loginUser = async ({
@@ -145,7 +145,9 @@ export const authOptions = {
           token.email = user?.email;
           token.picture = "";
           token.accessToken = user?.accessToken;
+          token.refreshToken = user?.refreshToken;
           token.id = user?._id;
+          token.refreshToken = user?.refreshToken;
           token.status = user?.status;
         }
       }

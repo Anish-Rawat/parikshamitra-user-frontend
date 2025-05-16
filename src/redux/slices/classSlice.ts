@@ -3,6 +3,7 @@ import {
     ClassInterface,
     ClassState,
   } from "@/common/interface";
+import { API_URIS } from "@/utils/constant";
   import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
   
   const initialState: ClassState = {
@@ -15,7 +16,7 @@ import {
     "getClasses",
     async ({ accessToken }: { accessToken: string }) => {
       const getClassesApiResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_DEV_BASE_URL}/admin/class/get-classes`,
+        `${process.env.NEXT_PUBLIC_DEV_BASE_URL}/${API_URIS.classes.getClassesAndStreams}`,
         {
           method: "GET",
           headers: {

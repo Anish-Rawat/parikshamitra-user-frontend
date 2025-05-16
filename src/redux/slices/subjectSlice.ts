@@ -3,6 +3,7 @@ import {
     SubjectInterface,
     SubjectState,
   } from "@/common/interface";
+import { API_URIS } from "@/utils/constant";
   import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
   
   const initialState: SubjectState = {
@@ -19,7 +20,7 @@ import {
       if(classId) endUrl.append("classId",classId)
       endUrl.append("page",String(page))
       endUrl.append("limit",String(limit))
-      const filteredSubjectApiResponse = await fetch(`${process.env.NEXT_PUBLIC_DEV_BASE_URL}/admin/subject/get-subjects?${endUrl}`,
+      const filteredSubjectApiResponse = await fetch(`${process.env.NEXT_PUBLIC_DEV_BASE_URL}/${API_URIS.subjects.getSubjects}?${endUrl}`,
         {
           method:"GET",
           headers:{

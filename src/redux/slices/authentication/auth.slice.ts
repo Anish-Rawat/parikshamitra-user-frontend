@@ -1,5 +1,5 @@
 import { AuthState, TokenState, UserState } from "@/common/interface";
-import { API_URIS } from "@/utils/contant";
+import { API_URIS } from "@/utils/constant";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: AuthState = {
