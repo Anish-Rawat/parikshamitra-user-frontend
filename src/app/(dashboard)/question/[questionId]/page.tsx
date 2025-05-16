@@ -2,7 +2,7 @@
 
 import useTimer from "@/hooks/useTimer";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setTimer } from "@/redux/slices/questionSlice";
+import { setTimer } from "@/redux/slices/question/questionSlice";
 import { setAnswers } from "@/redux/slices/test/answer.slice";
 import { submitTest } from "@/redux/slices/test/test.slice";
 import { RootState } from "@/redux/store";
