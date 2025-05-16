@@ -9,34 +9,33 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const TestScore = () => {
-    const router = useRouter();
-  const testSelector = useAppSelector(
-    (state: RootState) => state.test
-  );
+  const router = useRouter();
+  const testSelector = useAppSelector((state: RootState) => state.test);
   const dispatch = useAppDispatch();
   const totalScore = testSelector?.submitTest?.data?.totalScore ?? 0;
   const totalQuestions = testSelector?.createTest?.data?.totalQuestions ?? 0;
   const correctAnswerCount =
-  testSelector?.submitTest?.data?.evaluatedAnswers.filter(
-    (item) => item.isCorrect
-  ).length;
-  const incorrectAnswerCount =
-  testSelector?.submitTest?.data?.evaluatedAnswers.filter(
-    (item) => !item.isCorrect
-  ).length;
-  const attemptedQuestionCount = testSelector?.submitTest?.data?.evaluatedAnswers.filter((item) => item.submittedAnswer).length;
+    testSelector?.submitTest?.data?.evaluatedAnswers.filter(
+      (item) => item.isCorrect
+    ).length;
+  const attemptedQuestionCount =
+    testSelector?.submitTest?.data?.evaluatedAnswers.filter(
+      (item) => item.submittedAnswer
+    ).length;
+  const incorrectAnswerCount = attemptedQuestionCount - correctAnswerCount;
+  const percentage = Math.floor((totalScore / totalQuestions) * 100) ?? 0;
+
   const handleStartNewTest = () => {
     dispatch(resetAnswers());
     dispatch(resetTest());
     router.push("/start-test");
-  }
-  
+  };
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl text-center">
       <h1 className="text-3xl font-bold mb-2">Test Completed!</h1>
       <h2 className="text-5xl text-purple-600 font-bold mb-4">
-        {/* {Math.floor((calculateResult() / 20) * 100)}% */}
-        {totalScore}
+        {percentage}%
       </h2>
       <p className="mb-4">
         You scored {totalScore} out of {totalQuestions} questions
