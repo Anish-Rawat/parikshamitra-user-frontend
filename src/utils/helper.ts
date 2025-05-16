@@ -1,6 +1,6 @@
-import { getClasses } from "@/redux/slices/classSlice";
-import { getQuestions } from "@/redux/slices/questionSlice";
-import { getSubjects } from "@/redux/slices/subjectSlice";
+import { getClasses } from "@/redux/slices/class/classSlice";
+import { getQuestions } from "@/redux/slices/question/questionSlice";
+import { getSubjects } from "@/redux/slices/subjects/subjectSlice";
 import { AppDispatch } from "@/redux/store";
 import { signIn } from "next-auth/react";
 

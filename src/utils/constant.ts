@@ -16,5 +16,8 @@ export const API_URIS = {
     tests: {
         createTest: "test/create-test",
         submitTest: "test/submit-test"
+    },
+    user: {
+        createTest: "test/get-test-by-userId",
     }
 };

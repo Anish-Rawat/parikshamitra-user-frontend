@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { getClasses } from "@/redux/slices/classSlice";
+import { getClasses } from "@/redux/slices/class/classSlice";
 import { RootState } from "@/redux/store";
 import React from "react";
 import { toast } from "react-toastify";

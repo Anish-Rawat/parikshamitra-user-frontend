@@ -2,7 +2,7 @@
 
 import Subjects from "@/components/dashboard/subjects";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { getQuestions } from "@/redux/slices/questionSlice";
+import { getQuestions } from "@/redux/slices/question/questionSlice";
 import {
   createTest,
   setFormData as setTestFormData,

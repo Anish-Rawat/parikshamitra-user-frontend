@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { getSubjects } from "@/redux/slices/subjectSlice";
+import { getSubjects } from "@/redux/slices/subjects/subjectSlice";
 import { RootState } from "@/redux/store";
 import React from "react";
 import { toast } from "react-toastify";
