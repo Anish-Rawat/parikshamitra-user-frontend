@@ -33,6 +33,15 @@ export function PerformanceStats() {
       darkBgColor: "#166534",
     },
     {
+      icon: <BarChart3 style={{ height: 24, width: 24, color: "#22c55e" }} />,
+      title: "Medium Level Score",
+      value: "70.3%",
+      change: "+4.7% from last month",
+      borderColor: "#FFF600", 
+      bgColor: "#FFFF9F", 
+      darkBgColor: "#166534",
+    },
+    {
       icon: <Activity style={{ height: 24, width: 24, color: "#f59e0b" }} />,
       title: "Hard Level Score",
       value: "64.8%",

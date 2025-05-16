@@ -9,8 +9,11 @@ import {
   Button,
   Chip,
   IconButton,
+  Box,
+  Tooltip,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 interface RecentTestsProps {
   showAll?: boolean;
@@ -72,49 +75,103 @@ export function RecentTests({ showAll = false }: RecentTestsProps) {
       case "Easy":
         return "success"; // Green
       case "Medium":
-        return "warning"; // Amber
+        return "warning"; // Orange
       case "Hard":
-        return "error";   // Red
+        return "error"; // Red
       default:
         return "default";
     }
   };
 
+  const getScoreColor = (score: string) => {
+    const numericScore = parseInt(score);
+    if (numericScore >= 85) return "#4caf50"; // Green
+    if (numericScore >= 70) return "#ff9800"; // Orange
+    return "#f44336"; // Red
+  };
+
   return (
     <>
-      <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
+      <TableContainer 
+        component={Paper} 
+        elevation={0} 
+        sx={{ 
+          overflowX: "auto",
+          "&::-webkit-scrollbar": {
+            height: "8px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(0,0,0,0.1)",
+            borderRadius: "4px",
+          }
+        }}
+      >
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Test</TableCell>
-              <TableCell>Subject</TableCell>
-              <TableCell>Class</TableCell>
-              <TableCell>Difficulty</TableCell>
-              <TableCell>Score</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell align="right">Actions</TableCell>
+            <TableRow sx={{ backgroundColor: "rgba(0,0,0,0.02)" }}>
+              <TableCell sx={{ fontWeight: "bold" }}>Test</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Subject</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Class</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Difficulty</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Score</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {displayTests.map((test) => (
-              <TableRow key={test.id}>
-                <TableCell sx={{ fontWeight: "bold" }}>{test.title}</TableCell>
+              <TableRow 
+                key={test.id} 
+                sx={{ 
+                  "&:hover": { 
+                    backgroundColor: "rgba(0,0,0,0.02)",
+                  },
+                  transition: "background-color 0.2s"
+                }}
+              >
+                <TableCell sx={{ fontWeight: "medium" }}>{test.title}</TableCell>
                 <TableCell>{test.subject}</TableCell>
                 <TableCell>{test.class}</TableCell>
                 <TableCell>
                   <Chip
                     label={test.difficulty}
                     color={getDifficultyColor(test.difficulty)}
-                    variant="outlined"
                     size="small"
+                    sx={{ 
+                      fontWeight: "medium",
+                      minWidth: "70px",
+                    }}
                   />
                 </TableCell>
-                <TableCell>{test.score}</TableCell>
+                <TableCell>
+                  <Box 
+                    sx={{ 
+                      fontWeight: "bold", 
+                      color: getScoreColor(test.score),
+                      display: "inline-block",
+                      borderRadius: 1,
+                      px: 1,
+                      py: 0.5,
+                      backgroundColor: `${getScoreColor(test.score)}10`,
+                    }}
+                  >
+                    {test.score}
+                  </Box>
+                </TableCell>
                 <TableCell>{test.date}</TableCell>
                 <TableCell align="right">
-                  <IconButton color="primary" size="small">
-                    <VisibilityIcon fontSize="small" />
-                  </IconButton>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Tooltip title="View Details">
+                      <IconButton size="small" color="primary" sx={{ mr: 1 }}>
+                        <VisibilityIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Download Report">
+                      <IconButton size="small" color="secondary">
+                        <FileDownloadIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
@@ -123,11 +180,17 @@ export function RecentTests({ showAll = false }: RecentTestsProps) {
       </TableContainer>
 
       {!showAll && (
-        <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
-          <Button variant="outlined" size="small">
+        <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+          <Button 
+            variant="outlined" 
+            color="secondary" 
+            size="medium"
+            endIcon={<VisibilityIcon />}
+            sx={{ borderRadius: 6, px: 3 }}
+          >
             View All Tests
           </Button>
-        </div>
+        </Box>
       )}
     </>
   );
