@@ -27,14 +27,10 @@ const SelectClassesAndStreams: React.FC<SelectTestInfoProps> = ({
     (item) => item.category === "class"
   );
 
-  const [selectedClass, setSelectedClass] = React.useState(classes[0]?.classId);
-
   const getAllClassesAndStreams = async () => {
-    if (!accessTokenSelector) {
-      return;
-    }
+    if (!accessTokenSelector) return;
     try {
-      await dispatch(getClasses({ accessToken: accessTokenSelector ?? "" }));
+      await dispatch(getClasses({ accessToken: accessTokenSelector }));
     } catch (error) {
       toast.error("Error fetching classes");
       console.error("Error fetching classes:", error);
@@ -43,7 +39,6 @@ const SelectClassesAndStreams: React.FC<SelectTestInfoProps> = ({
 
   const handleFormChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setSelectedClass(e.target.value);
   };
 
   React.useEffect(() => {
@@ -55,7 +50,7 @@ const SelectClassesAndStreams: React.FC<SelectTestInfoProps> = ({
       disabled={!formData.category}
       name="class"
       required
-      value={selectedClass}
+      value={formData.class}
       onChange={handleFormChange}
       className="p-3 border rounded"
     >
@@ -75,5 +70,6 @@ const SelectClassesAndStreams: React.FC<SelectTestInfoProps> = ({
     </select>
   );
 };
+
 
 export default SelectClassesAndStreams;

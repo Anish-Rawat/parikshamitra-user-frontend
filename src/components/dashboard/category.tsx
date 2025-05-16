@@ -5,7 +5,11 @@ import React from "react";
 
 const SelectCategory: React.FC<SelectTestInfoProps> = ({ setFormData, formData }) => {
   const handleFormChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({
+      ...prev,
+      class: '',
+      [e.target.name]: e.target.value,
+    }));
   };
   return (
     <select
