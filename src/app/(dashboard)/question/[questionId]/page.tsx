@@ -43,7 +43,6 @@ const Questions = () => {
   );
 
   const handleAnswer = (questionId: string | undefined, answer: string) => {
-
     if (!questionId) return;
 
     const currentQuestion = questions.find(
@@ -84,35 +83,38 @@ const Questions = () => {
     const step = type === "next" ? 1 : -1;
     const newIndex = currentQuestionIndex + step;
 
-    if (questions[currentQuestionIndex].timeLeft === 0 ) {
+    if (questions[currentQuestionIndex].timeLeft === 0) {
       toast.error("Time's up for this question!");
       return;
     }
 
-    if (questions[newIndex].timeLeft > 0) {
-      if (newIndex >= 0 && newIndex < questions.length) {
-        const nextQuestionId = questions[newIndex].questionId;
+    if (newIndex >= 0 && newIndex < questions.length) {
+      const nextQuestionId = questions[newIndex].questionId;
 
-        // Go to next/prev question
-        router.push(`/question/${nextQuestionId}`);
+      // Go to next/prev question
+      router.push(`/question/${nextQuestionId}`);
 
-        // Store timer for current question
-        dispatch(
-          setTimer({
-            questionId: currentQuestionData?.questionId,
-            timeLeft: timer,
-          })
-        );
-      } else {
-        console.log("No more questions");
-        router.push("/test-score");
-      }
+      // Store timer for current question
+      dispatch(
+        setTimer({
+          questionId: currentQuestionData?.questionId,
+          timeLeft: timer,
+        })
+      );
+    } else {
+      console.log("No more questions");
+      router.push("/test-score");
     }
   };
 
   useEffect(() => {
     if (timer === 0) {
-      dispatch(setAnswers({ questionId: currentQuestionData?.questionId ?? "", answer: '' }));
+      dispatch(
+        setAnswers({
+          questionId: currentQuestionData?.questionId ?? "",
+          answer: "",
+        })
+      );
       handleQuestionChange("next");
     }
     if (timer === WARNING_TIME) {

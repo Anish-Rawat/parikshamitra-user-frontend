@@ -60,7 +60,7 @@ const TestScore = () => {
         </div>
       </div>
       <button
-        className="bg-purple-600 text-white px-6 py-3 rounded"
+        className="bg-purple-600 text-white px-6 py-3 rounded cursor-pointer"
         onClick={handleStartNewTest}
       >
         Start New Test

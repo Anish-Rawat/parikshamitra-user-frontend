@@ -126,7 +126,7 @@ export default function CreateTestPage() {
             className="p-3 border rounded"
           />
           <button
-            className="bg-purple-600 text-white py-3 rounded hover:bg-purple-700"
+            className="bg-purple-600 text-white py-3 rounded hover:bg-purple-700 cursor-pointer"
             type="submit"
           >
             Start Test
