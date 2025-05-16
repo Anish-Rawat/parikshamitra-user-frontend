@@ -19,7 +19,11 @@ export const answerSlice = createSlice({
         state.push({ questionId, answer });
       }
     },
+    resetAnswers: () => {
+      return [];
+    }
   },
+  
 });
-export const { setAnswers } = answerSlice.actions;
+export const { setAnswers, resetAnswers } = answerSlice.actions;
 export default answerSlice.reducer;

@@ -1,21 +1,24 @@
-import { SelectTestInfoProps } from "@/common/interface";
 import React from "react";
 import { DIFFICULITES as difficulties } from "@/utils/mockData";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { setFormData as setTestFormData } from "@/redux/slices/test/test.slice";
+import { RootState } from "@/redux/store";
 
+const SelectDifficulty = () => {
+  const dispatch = useAppDispatch();
+  const testFormSelector = useAppSelector(
+    (state: RootState) => state.test.testForm
+  )
 
-const SelectDifficulty: React.FC<SelectTestInfoProps> = ({
-  setFormData,
-  formData,
-}) => {
   const handleFormChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    dispatch(setTestFormData({ ...testFormSelector, [e.target.name]: e.target.value }));
   };
 
   return (
     <select
       name="difficulty"
       required
-      value={formData.difficulty}
+      value={testFormSelector.difficulty}
       onChange={handleFormChange}
       className="p-3 border rounded"
     >

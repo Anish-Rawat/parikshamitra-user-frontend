@@ -1,15 +1,15 @@
-import { SelectTestInfoProps } from "@/common/interface";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { getClasses } from "@/redux/slices/classSlice";
 import { RootState } from "@/redux/store";
 import React from "react";
 import { toast } from "react-toastify";
+import { setFormData as setTestFormData } from "@/redux/slices/test/test.slice";
 
-const SelectClassesAndStreams: React.FC<SelectTestInfoProps> = ({
-  setFormData,
-  formData,
-}) => {
+const SelectClassesAndStreams = () => {
   const dispatch = useAppDispatch();
+    const testFormSelector = useAppSelector(
+      (state: RootState) => state.test.testForm
+    );
 
   const accessTokenSelector = useAppSelector(
     (state: RootState) => state.auth.tokens.accessToken
@@ -38,7 +38,7 @@ const SelectClassesAndStreams: React.FC<SelectTestInfoProps> = ({
   };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    dispatch(setTestFormData({ ...testFormSelector, [e.target.name]: e.target.value }));
   };
 
   React.useEffect(() => {
@@ -47,21 +47,21 @@ const SelectClassesAndStreams: React.FC<SelectTestInfoProps> = ({
 
   return (
     <select
-      disabled={!formData.category}
+      disabled={!testFormSelector.category}
       name="class"
       required
-      value={formData.class}
+      value={testFormSelector.class}
       onChange={handleFormChange}
       className="p-3 border rounded"
     >
-      <option value="">Select {formData.category}</option>
-      {formData.category === "Stream" &&
+      <option value="">Select {testFormSelector.category}</option>
+      {testFormSelector.category === "Stream" &&
         streams.map((cls) => (
           <option key={cls.classId} value={cls.classId}>
             {cls.className}
           </option>
         ))}
-      {formData.category === "Class" &&
+      {testFormSelector.category === "Class" &&
         classes.map((cls) => (
           <option key={cls.classId} value={cls.classId}>
             {cls.className}
@@ -70,6 +70,5 @@ const SelectClassesAndStreams: React.FC<SelectTestInfoProps> = ({
     </select>
   );
 };
-
 
 export default SelectClassesAndStreams;

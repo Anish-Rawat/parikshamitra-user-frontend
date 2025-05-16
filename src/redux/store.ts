@@ -14,7 +14,7 @@ export const makeStore = () => {
       question:QuestionReducer,
       auth: authReducer,
       test: testReducer,
-      answer: answerReducer
+      answer: answerReducer,
     },
   })
 }

@@ -1,6 +1,9 @@
 "use client";
 
+import { useAppDispatch } from "@/lib/hooks";
 import { useAppSelector } from "@/redux/hook";
+import { resetAnswers } from "@/redux/slices/test/answer.slice";
+import { resetTest } from "@/redux/slices/test/test.slice";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -10,6 +13,7 @@ const TestScore = () => {
   const testSelector = useAppSelector(
     (state: RootState) => state.test
   );
+  const dispatch = useAppDispatch();
   const totalScore = testSelector?.submitTest?.data?.totalScore ?? 0;
   const totalQuestions = testSelector?.createTest?.data?.totalQuestions ?? 0;
   const correctAnswerCount =
@@ -22,6 +26,8 @@ const TestScore = () => {
   ).length;
   const attemptedQuestionCount = testSelector?.submitTest?.data?.evaluatedAnswers.length;
   const handleStartNewTest = () => {
+    dispatch(resetAnswers());
+    dispatch(resetTest());
     router.push("/start-test");
   }
   
@@ -33,7 +39,7 @@ const TestScore = () => {
         {totalScore}
       </h2>
       <p className="mb-4">
-        You scored {totalScore} out of 20 questions
+        You scored {totalScore} out of {totalQuestions} questions
       </p>
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div>

@@ -1,22 +1,21 @@
-import { SelectTestInfoProps } from "@/common/interface";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { getSubjects } from "@/redux/slices/subjectSlice";
 import { RootState } from "@/redux/store";
 import React from "react";
 import { toast } from "react-toastify";
-
+import { setFormData as setTestFormData } from "@/redux/slices/test/test.slice";
 
 const LIMIT = 10;
 
-const SelectSubjects:React.FC<SelectTestInfoProps> = ({setFormData, formData}) => {
+const SelectSubjects = () => {
   const dispatch = useAppDispatch();
   const accessTokenSelector = useAppSelector(
     (state: RootState) => state.auth.tokens.accessToken
   );
-
-  const subjectsSelector = useAppSelector(
-    (state: RootState) => state.subject
+  const testFormSelector = useAppSelector(
+    (state: RootState) => state.test.testForm
   );
+  const subjectsSelector = useAppSelector((state: RootState) => state.subject);
 
   const subjects = subjectsSelector.data;
 
@@ -25,29 +24,36 @@ const SelectSubjects:React.FC<SelectTestInfoProps> = ({setFormData, formData}) =
       return;
     }
     try {
-      await dispatch(getSubjects({ accessToken: accessTokenSelector ?? "", classId: formData.class, page: 1, limit: LIMIT }));
+      await dispatch(
+        getSubjects({
+          accessToken: accessTokenSelector ?? "",
+          classId: testFormSelector.class,
+          page: 1,
+          limit: LIMIT,
+        })
+      );
     } catch (error) {
       toast.error("Error fetching classes");
       console.error("Error fetching classes:", error);
     }
-  }
+  };
 
   const handleFormChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    dispatch(
+      setTestFormData({ ...testFormSelector, [e.target.name]: e.target.value })
+    );
   };
 
   React.useEffect(() => {
     getSubjectsByClassAndStreamId();
-  }, [accessTokenSelector, formData.class]);
-
-  
+  }, [accessTokenSelector, testFormSelector.class]);
 
   return (
     <select
       name="subject"
       required
-      disabled={subjectsSelector.loading || !formData.class}
-      value={formData.subject}
+      disabled={subjectsSelector.loading || !testFormSelector.class}
+      value={testFormSelector.subject}
       onChange={handleFormChange}
       className="p-3 border rounded"
     >

@@ -1,11 +1,6 @@
-import { TestInfo } from "@/common/interface";
+import { AnswersPayload, FormDataType, TestInfo } from "@/common/interface";
 import { API_URIS } from "@/utils/constant";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-interface AnswersPayload {
-  questionId: string;
-  answer: string;
-}
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: TestInfo = {
   createTest: {
@@ -43,6 +38,14 @@ const initialState: TestInfo = {
     },
     loading: false,
     error: null,
+  },
+  testForm: {
+    category: "",
+    class: "",
+    subject: "",
+    difficulty: "",
+    numberOfQuestions: "",
+    testName: "",
   },
 };
 
@@ -117,7 +120,19 @@ export const submitTest = createAsyncThunk(
 export const testSlice = createSlice({
   name: "test",
   initialState,
-  reducers: {},
+  reducers: {
+    setFormData: (state, action: PayloadAction<FormDataType>) => {
+      return {
+        ...state,
+        testForm: action.payload,
+      };
+    },
+    resetTest: () => {
+      return {
+        ...initialState,
+      };
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createTest.pending, (state) => {
@@ -148,4 +163,5 @@ export const testSlice = createSlice({
       });
   },
 });
+export const { setFormData, resetTest } = testSlice.actions;
 export default testSlice.reducer;

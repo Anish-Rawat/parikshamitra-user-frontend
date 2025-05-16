@@ -149,6 +149,7 @@ export interface FormDataType {
 export interface TestInfo {
   createTest: CreateTestState;
   submitTest: SubmitTestState;
+  testForm: FormDataType;
 }
 
 interface CreateTestState {
@@ -185,4 +186,9 @@ export interface TestAnswers {
 export interface SelectTestInfoProps {
   setFormData: React.Dispatch<React.SetStateAction<FormDataType>>;
   formData: FormDataType;
+}
+
+export interface AnswersPayload {
+  questionId: string;
+  answer: string;
 }

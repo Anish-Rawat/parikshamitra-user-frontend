@@ -3,9 +3,12 @@
 import Subjects from "@/components/dashboard/subjects";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { getQuestions } from "@/redux/slices/questionSlice";
-import { createTest } from "@/redux/slices/test/test.slice";
+import {
+  createTest,
+  setFormData as setTestFormData,
+} from "@/redux/slices/test/test.slice";
 import { RootState } from "@/redux/store";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import SelectClassesAndStreams from "@/components/dashboard/all-classes";
 import SelectCategory from "@/components/dashboard/category";
@@ -13,16 +16,11 @@ import SelectDifficulty from "@/components/dashboard/difficulty";
 import { toast } from "react-toastify";
 
 export default function CreateTestPage() {
-  const [formData, setFormData] = useState({
-    category: "",
-    class: "",
-    subject: "",
-    difficulty: "",
-    numberOfQuestions: "",
-    testName: "",
-  });
   const accessTokenSelector = useAppSelector(
     (state: RootState) => state.auth.tokens.accessToken
+  );
+  const testFormSelector = useAppSelector(
+    (state: RootState) => state.test.testForm
   );
   const testSelector = useAppSelector((state: RootState) => state.test);
   const router = useRouter();
@@ -34,11 +32,11 @@ export default function CreateTestPage() {
   const validateForm = () => {
     if (
       [
-        formData.category,
-        formData.class,
-        formData.subject,
-        formData.difficulty,
-        formData.numberOfQuestions,
+        testFormSelector.category,
+        testFormSelector.class,
+        testFormSelector.subject,
+        testFormSelector.difficulty,
+        testFormSelector.numberOfQuestions,
       ].includes("")
     ) {
       return false;
@@ -60,40 +58,42 @@ export default function CreateTestPage() {
       await dispatch(
         createTest({
           accessToken: accessTokenSelector ?? "",
-          testName: formData.subject ?? "abcdef",
-          difficultyLevel: formData.difficulty.toLocaleLowerCase(),
-          totalQuestions: Number(formData.numberOfQuestions),
-          subjectId: formData.subject,
-          classId: formData.class,
+          testName: testFormSelector.subject ?? "",
+          difficultyLevel: testFormSelector.difficulty.toLocaleLowerCase(),
+          totalQuestions: Number(testFormSelector.numberOfQuestions),
+          subjectId: testFormSelector.subject,
+          classId: testFormSelector.class,
         })
       );
       const questions = await dispatch(
         getQuestions({
           accessToken: accessTokenSelector ?? "",
-          classId: formData.class,
-          subjectId: formData.subject,
-          difficultyLevel: formData.difficulty,
+          classId: testFormSelector.class,
+          subjectId: testFormSelector.subject,
+          difficultyLevel: testFormSelector.difficulty,
           page: 1,
-          limit: Number(formData.numberOfQuestions),
+          limit: Number(testFormSelector.numberOfQuestions),
           searchQuestion: "",
         })
       ).unwrap();
-      if (questions.data.result.length === 0) {
+      const totalQuestions = questions.data.result.length;
+      if (totalQuestions === 0) {
         toast.error("No questions found");
         return;
       }
       const questionId = questions.data.result[0]._id;
       router.push(`/question/${questionId}`);
-    }
-    catch (error) {
+    } catch (error) {
       toast.error("Error creating test");
       console.error("Error creating test:", error);
     }
   };
 
-    const handleFormInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+  const handleFormInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      setTestFormData({ ...testFormSelector, [e.target.name]: e.target.value })
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -104,25 +104,23 @@ export default function CreateTestPage() {
             type="string"
             name="testName"
             required
-            value={formData.testName}
+            value={testFormSelector.testName}
             onChange={(e) => handleFormInputChange(e)}
             placeholder="Enter Test Name"
             className="p-3 border rounded"
           />
-          <SelectCategory setFormData={setFormData} formData={formData} />
-          <SelectClassesAndStreams
-            setFormData={setFormData}
-            formData={formData}
-          />
+          <SelectCategory />
+          <SelectClassesAndStreams />
 
-          <Subjects setFormData={setFormData} formData={formData} />
-          <SelectDifficulty setFormData={setFormData} formData={formData} />
+          <Subjects />
+
+          <SelectDifficulty />
 
           <input
             type="number"
             required
             name="numberOfQuestions"
-            value={formData.numberOfQuestions}
+            value={testFormSelector.numberOfQuestions}
             onChange={(e) => handleFormInputChange(e)}
             placeholder="Enter number of questions"
             className="p-3 border rounded"

@@ -1,21 +1,22 @@
-import { SelectTestInfoProps } from "@/common/interface";
 import { CATEGORIES as categories } from "@/utils/mockData";
 import React from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { setFormData as setTestFormData } from "@/redux/slices/test/test.slice";
+import { RootState } from "@/redux/store";
 
-
-const SelectCategory: React.FC<SelectTestInfoProps> = ({ setFormData, formData }) => {
+const SelectCategory = () => {
+  const dispatch = useAppDispatch();
+  const testFormSelector = useAppSelector(
+    (state: RootState) => state.test.testForm
+  )
   const handleFormChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      class: '',
-      [e.target.name]: e.target.value,
-    }));
+    dispatch(setTestFormData({...testFormSelector, [e.target.name]: e.target.value}));
   };
   return (
     <select
       name="category"
       required
-      value={formData.category}
+      value={testFormSelector.category}
       onChange={handleFormChange}
       className="p-3 border rounded"
     >
