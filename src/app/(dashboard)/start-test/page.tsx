@@ -58,7 +58,7 @@ export default function CreateTestPage() {
       await dispatch(
         createTest({
           accessToken: accessTokenSelector ?? "",
-          testName: testFormSelector.subject ?? "",
+          testName: testFormSelector.testName ?? "",
           difficultyLevel: testFormSelector.difficulty.toLocaleLowerCase(),
           totalQuestions: Number(testFormSelector.numberOfQuestions),
           subjectId: testFormSelector.subject,
