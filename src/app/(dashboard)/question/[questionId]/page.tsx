@@ -84,8 +84,8 @@ const Questions = () => {
     const step = type === "next" ? 1 : -1;
     const newIndex = currentQuestionIndex + step;
 
-    if (questions[currentQuestionIndex].timeLeft === 0 ) {
-      toast.error("Time's up for this question!");
+    if (newIndex === questions.length) {
+      handleSubmitTest();
       return;
     }
 
@@ -104,7 +104,6 @@ const Questions = () => {
           })
         );
       } else {
-        console.log("No more questions");
         router.push("/test-score");
       }
     }
