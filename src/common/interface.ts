@@ -84,6 +84,7 @@ export interface QuestionInterface {
   totalQuestionsByClassAndSubject?: number;
   createdAt: string;
   updatedAt: string;
+  timeLeft: number;
 }
 
 export interface QuestionState {

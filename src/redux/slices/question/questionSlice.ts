@@ -4,8 +4,13 @@ import {
     QuestionState,
   } from "@/common/interface";
 import { API_URIS } from "@/utils/constant";
-  import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+  import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
   
+  interface SetTimer {
+    questionId?: string;
+    timeLeft: number;
+  }
+
   const initialState: QuestionState = {
     data: [],
     totalQuestions:0,
@@ -57,7 +62,17 @@ import { API_URIS } from "@/utils/constant";
   export const QuestionSlice = createSlice({
     name: "Question",
     initialState,
-    reducers: {},
+    reducers: {
+      setTimer: (state, action: PayloadAction<SetTimer>) => {
+        const { questionId, timeLeft } = action.payload;
+        const existingIndex = state.data.findIndex(
+          (item) => item.questionId === questionId
+        );
+        if (existingIndex !== -1) {
+          state.data[existingIndex].timeLeft = timeLeft;
+        }
+      },
+    },
     extraReducers: (builder) => {
       builder
         .addCase(getQuestions.pending, (state) => {
@@ -89,6 +104,8 @@ import { API_URIS } from "@/utils/constant";
         });
     },
   });
+
+  export const { setTimer } = QuestionSlice.actions;
   
   export default QuestionSlice.reducer;
   

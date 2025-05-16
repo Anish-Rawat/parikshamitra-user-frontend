@@ -24,7 +24,7 @@ const TestScore = () => {
   testSelector?.submitTest?.data?.evaluatedAnswers.filter(
     (item) => !item.isCorrect
   ).length;
-  const attemptedQuestionCount = testSelector?.submitTest?.data?.evaluatedAnswers.length;
+  const attemptedQuestionCount = testSelector?.submitTest?.data?.evaluatedAnswers.filter((item) => item.submittedAnswer).length;
   const handleStartNewTest = () => {
     dispatch(resetAnswers());
     dispatch(resetTest());
@@ -60,18 +60,8 @@ const TestScore = () => {
         </div>
       </div>
       <button
-        className="bg-purple-600 text-white px-6 py-3 rounded"
-        onClick={() => {
-            handleStartNewTest();
-        //   setFormData({
-        //     category: "",
-        //     class: "",
-        //     subject: "",
-        //     difficulty: "",
-        //     numberOfQuestions: "",
-        //   });
-        // setCurrentQuestion(0);
-        }}
+        className="bg-purple-600 text-white px-6 py-3 rounded cursor-pointer"
+        onClick={handleStartNewTest}
       >
         Start New Test
       </button>
