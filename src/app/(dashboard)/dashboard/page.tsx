@@ -12,7 +12,6 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 
 export default function DashboardPage() {
   const [tabValue, setTabValue] = useState('overview');
-
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
   };

@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 const TokenLoader = () => {
   const { data: session, status } = useSession();
   const dispatch = useDispatch();
-
+  console.log("SEsssion",session);
   useEffect(() => {
     // Check if session and tokens are available
     if (session?.user?.accessToken && session?.user?.refreshToken) {
@@ -22,6 +22,7 @@ const TokenLoader = () => {
           })
         );
         const userInfo = {
+          _id : session?.user?.id,
           userName: session?.user?.name ?? "",
           email: session?.user?.email ?? "",
           status: session?.user?.status ?? "active",
@@ -41,6 +42,7 @@ const TokenLoader = () => {
       );
       dispatch(
         setUserInfo({
+          _id:"",
           userName: "",
           email: "",
           status: "active",

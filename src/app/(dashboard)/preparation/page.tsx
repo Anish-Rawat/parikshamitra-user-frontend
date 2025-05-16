@@ -26,6 +26,7 @@ export default function PreparationPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { data: session } = useSession();
   const accessToken = useAppSelector((state:RootState)=>state.auth.tokens.accessToken)
+  console.log("Access toekn preparation", accessToken)
   console.log("access",accessToken)
   const totalClassesAndStreams = useAppSelector((state) => state.class.data);
   const isClassesAndStreamsLoading = useAppSelector(

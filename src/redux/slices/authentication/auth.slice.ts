@@ -12,6 +12,7 @@ const initialState: AuthState = {
     refreshToken: "",
   },
   user: {
+    _id : "",
     userName: "",
     email: "",
     status: "active",
@@ -83,6 +84,7 @@ const authSlice = createSlice({
     },
     clearUserInfo: (state) => {
       state.user = {
+        _id:"",
         userName: "",
         email: "",
         status: "active",

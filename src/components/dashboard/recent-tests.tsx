@@ -1,3 +1,4 @@
+'use client'
 import {
   Table,
   TableBody,
@@ -14,60 +15,29 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useEffect } from "react";
+import { getTestListsByUserId } from "@/redux/slices/user/userSlice";
 
 interface RecentTestsProps {
   showAll?: boolean;
 }
 
 export function RecentTests({ showAll = false }: RecentTestsProps) {
-  const tests = [
-    {
-      id: "TEST-1001",
-      title: "Mathematics Mid-Term",
-      subject: "Mathematics",
-      class: "Class 8",
-      score: "78%",
-      date: "2023-04-15",
-      difficulty: "Medium",
-    },
-    {
-      id: "TEST-1002",
-      title: "Science Quiz",
-      subject: "Science",
-      class: "Class 9",
-      score: "85%",
-      date: "2023-04-12",
-      difficulty: "Easy",
-    },
-    {
-      id: "TEST-1003",
-      title: "English Grammar Test",
-      subject: "English",
-      class: "Class 7",
-      score: "92%",
-      date: "2023-04-10",
-      difficulty: "Easy",
-    },
-    {
-      id: "TEST-1004",
-      title: "Physics Final Exam",
-      subject: "Physics",
-      class: "Class 10",
-      score: "68%",
-      date: "2023-04-08",
-      difficulty: "Hard",
-    },
-    {
-      id: "TEST-1005",
-      title: "Computer Science Basics",
-      subject: "Computer Science",
-      class: "Class 11",
-      score: "75%",
-      date: "2023-04-05",
-      difficulty: "Medium",
-    },
-  ];
-
+  const dispatch = useAppDispatch();
+  const accessToken = useAppSelector((state)=>state.auth.tokens.accessToken)
+  const userInfo = useAppSelector((state)=>state.auth.user)
+  console.log("userinfo",userInfo)
+  const tests = useAppSelector((state)=>state.user.getTestsByUserId).testsListing
+  const userId = userInfo?._id
+  useEffect(()=>{
+    console.log("accessToken")
+    if(accessToken){
+      console.log("accessToken")
+      dispatch(getTestListsByUserId({accessToken,userId}))
+    }
+  },[dispatch,accessToken,userId])
+  console.log("tests",tests)
   const displayTests = showAll ? tests : tests.slice(0, 3);
 
   const getDifficultyColor = (difficulty: string) => {
@@ -121,7 +91,7 @@ export function RecentTests({ showAll = false }: RecentTestsProps) {
           <TableBody>
             {displayTests.map((test) => (
               <TableRow 
-                key={test.id} 
+                key={test._id} 
                 sx={{ 
                   "&:hover": { 
                     backgroundColor: "rgba(0,0,0,0.02)",
@@ -129,13 +99,13 @@ export function RecentTests({ showAll = false }: RecentTestsProps) {
                   transition: "background-color 0.2s"
                 }}
               >
-                <TableCell sx={{ fontWeight: "medium" }}>{test.title}</TableCell>
-                <TableCell>{test.subject}</TableCell>
-                <TableCell>{test.class}</TableCell>
+                <TableCell sx={{ fontWeight: "medium" }}>{test.testName}</TableCell>
+                <TableCell>{test.subjectName}</TableCell>
+                <TableCell>{test.className}</TableCell>
                 <TableCell>
                   <Chip
-                    label={test.difficulty}
-                    color={getDifficultyColor(test.difficulty)}
+                    label={test.difficultyLevel}
+                    color={getDifficultyColor(test.difficultyLevel)}
                     size="small"
                     sx={{ 
                       fontWeight: "medium",
@@ -147,18 +117,18 @@ export function RecentTests({ showAll = false }: RecentTestsProps) {
                   <Box 
                     sx={{ 
                       fontWeight: "bold", 
-                      color: getScoreColor(test.score),
+                      color: getScoreColor((test.marksObtained).toString()),
                       display: "inline-block",
                       borderRadius: 1,
                       px: 1,
                       py: 0.5,
-                      backgroundColor: `${getScoreColor(test.score)}10`,
+                      backgroundColor: `${getScoreColor((test.marksObtained).toString())}10`,
                     }}
                   >
-                    {test.score}
+                    {test.marksObtained}
                   </Box>
                 </TableCell>
-                <TableCell>{test.date}</TableCell>
+                <TableCell>{test.createdAt}</TableCell>
                 <TableCell align="right">
                   <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     <Tooltip title="View Details">

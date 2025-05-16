@@ -5,6 +5,7 @@ import QuestionReducer from './slices/question/questionSlice'
 import authReducer from '../redux/slices/authentication/auth.slice'
 import testReducer from '../redux/slices/test/test.slice'
 import answerReducer from '../redux/slices/test/answer.slice'
+import userReducer from '../redux/slices/user/userSlice'
 
 export const makeStore = () => {
   return configureStore({
@@ -15,6 +16,7 @@ export const makeStore = () => {
       auth: authReducer,
       test: testReducer,
       answer: answerReducer,
+      user: userReducer,
     },
   })
 }

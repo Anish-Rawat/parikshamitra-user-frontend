@@ -42,10 +42,10 @@ export interface ApiResponseClassInterface extends ClassInterface {
 export interface Test {
   _id: string;
   testName: string;
-  createdBy: string;
+  createdBy?: string;
   totalQuestions: number;
   difficultyLevel: string;
-  avgScore: number;
+  avgScore?: number;
   createdAt: string;
   marksObtained: number;
   subjectName: string;
@@ -132,6 +132,7 @@ export interface TokenState {
 }
 
 export interface UserState {
+  _id : string,
   userName: string;
   email: string;
   status: "active" | "inactive";

@@ -20,6 +20,7 @@ const initialState: TestState = {
 export const getTestListsByUserId = createAsyncThunk(
   "getTestLists",
   async ({ accessToken, userId }: { accessToken: string; userId: string }) => {
+    console.log("getTestListsByUserId",accessToken,userId)
     const getTestListsByUserIdApiResponse = await fetch(
       `${process.env.NEXT_PUBLIC_DEV_BASE_URL}/${API_URIS?.user?.createTest}/${userId}`,
       {
@@ -31,6 +32,7 @@ export const getTestListsByUserId = createAsyncThunk(
       }
     );
     const getTestListsByUserIdJsonResponse = await getTestListsByUserIdApiResponse.json();
+    console.log("getTestListsByUserIdJsonResponse",getTestListsByUserIdJsonResponse)
     return getTestListsByUserIdJsonResponse;
   }
 );
@@ -47,7 +49,16 @@ export const userSlice = createSlice({
         })
         .addCase(getTestListsByUserId.fulfilled,(state,action)=>{
             state.getTestsByUserId.loading = false;
-            
+            const testListGetInResponse = action?.payload?.tests
+            state.getTestsByUserId.testsListing = testListGetInResponse.map((test)=>{
+              const {classId,subjectId,...rest} = test
+              console.log("classId",classId)
+              return {
+                className : classId?.className,
+                subjectName : subjectId?.subjectName,
+                ...rest,
+              }
+            })
         })
         .addCase(getTestListsByUserId.rejected,(state,action)=>{
             state.getTestsByUserId.loading = false;
@@ -55,3 +66,5 @@ export const userSlice = createSlice({
         })
   },
 });
+
+  export default userSlice.reducer;

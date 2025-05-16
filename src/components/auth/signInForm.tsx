@@ -57,6 +57,7 @@ export function SignInForm() {
         })
       );
       const userInfo = {
+        _id: session?.user?.id,
         userName: session?.user?.name ?? "",
         email: session?.user?.email ?? "",
         status: session?.user?.status ?? "active",
