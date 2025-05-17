@@ -3,7 +3,7 @@ import { API_URIS } from "@/utils/constant";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: TestInfo = {
-  createTest: {
+  startTest: {
     data: {
       _id: "",
       testName: "",
@@ -136,16 +136,16 @@ export const testSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createTest.pending, (state) => {
-        state.createTest.loading = true;
-        state.createTest.error = null;
+        state.startTest.loading = true;
+        state.startTest.error = null;
       })
       .addCase(createTest.fulfilled, (state, action) => {
-        state.createTest.data = action.payload;
-        state.createTest.loading = false;
+        state.startTest.data = action.payload;
+        state.startTest.loading = false;
       })
       .addCase(createTest.rejected, (state, action) => {
-        state.createTest.loading = false;
-        state.createTest.error =
+        state.startTest.loading = false;
+        state.startTest.error =
           action.error.message ?? "Failed to delete class.";
       })
       .addCase(submitTest.pending, (state) => {

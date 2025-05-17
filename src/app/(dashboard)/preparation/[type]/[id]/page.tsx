@@ -3,13 +3,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardActionArea, Button, Typography, Breadcrumbs } from "@mui/material";
 import { ChevronRight } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "@/lib/hooks";
 import { useEffect } from "react";
 import { filteredSubjects, getClassesMiddleware } from "@/utils/helper";
-import { ACCESS_TOKEN } from "@/utils/constants";
 
 interface SubjectPageProps {
   params: {
@@ -21,7 +19,6 @@ interface SubjectPageProps {
 export default function SubjectPage({ params }: SubjectPageProps) {
   const { type, id } = params;
   const dispatch = useDispatch<AppDispatch>();
-  const {data:session} = useSession();
     const accessToken = useAppSelector((state:RootState)=>state.auth.tokens.accessToken)
   const totalClassesAndStreams  = useAppSelector((state)=>state.class.data)
   console.log("totalClassesAndStreams",totalClassesAndStreams)

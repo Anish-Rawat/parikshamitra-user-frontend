@@ -19,10 +19,10 @@ const initialState: TestState = {
 
 export const getTestListsByUserId = createAsyncThunk(
   "getTestLists",
-  async ({ accessToken, userId }: { accessToken: string; userId: string }) => {
-    console.log("getTestListsByUserId",accessToken,userId)
+  async ({ accessToken }: { accessToken: string }) => {
+    console.log("getTestListsByUserId",accessToken)
     const getTestListsByUserIdApiResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_DEV_BASE_URL}/${API_URIS?.user?.createTest}/${userId}`,
+      `${process.env.NEXT_PUBLIC_DEV_BASE_URL}/${API_URIS?.user?.createTest}`,
       {
         method: "GET",
         headers: {

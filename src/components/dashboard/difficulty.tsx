@@ -1,5 +1,5 @@
 import React from "react";
-import { DIFFICULTIES as difficulties } from "@/utils/mockData";
+import { DIFFICULTIES as difficulties } from "@/utils/constant";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setFormData as setTestFormData } from "@/redux/slices/test/test.slice";
 import { RootState } from "@/redux/store";

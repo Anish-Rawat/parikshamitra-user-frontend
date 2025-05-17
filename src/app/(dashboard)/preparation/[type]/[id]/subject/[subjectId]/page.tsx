@@ -11,10 +11,8 @@ import {
   filteredSubjects,
   getClassesMiddleware,
 } from "@/utils/helper";
-import { ACCESS_TOKEN } from "@/utils/constants";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useSession } from "next-auth/react";
 import { useAppSelector } from "@/lib/hooks";
 import { useSearchParams, useRouter } from "next/navigation";
 import NoData from "@/components/common/no-data";
@@ -46,8 +44,9 @@ export default function SubjectQuestionsPage({
   >(difficultyParam);
   const [page, setPage] = useState(pageParam);
   const dispatch = useDispatch<AppDispatch>();
-  const { data: session } = useSession();
-      const accessToken = useAppSelector((state:RootState)=>state.auth.tokens.accessToken)
+  const accessToken = useAppSelector(
+    (state: RootState) => state.auth.tokens.accessToken
+  );
   const totalClassesAndStreams = useAppSelector((state) => state.class.data);
   const subjects = useAppSelector((state) => state.subject.data);
   const questions = useAppSelector((state) => state.question.data);
@@ -76,14 +75,14 @@ export default function SubjectQuestionsPage({
   };
   console.log("questions", questions);
   useEffect(() => {
-    if(accessToken){
+    if (accessToken) {
       getClassesMiddleware(dispatch, accessToken);
-    filteredSubjects(dispatch, accessToken, id, page, limit);
+      filteredSubjects(dispatch, accessToken, id, page, limit);
     }
   }, [dispatch, id, accessToken, subjectId, difficultyParam, page]);
   useEffect(() => {
-    console.log("Fetching que here",accessToken)
-    if(accessToken){
+    console.log("Fetching que here", accessToken);
+    if (accessToken) {
       fetchQuestions(
         dispatch,
         accessToken,

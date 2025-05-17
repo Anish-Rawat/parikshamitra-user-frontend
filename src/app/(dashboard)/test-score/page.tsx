@@ -13,7 +13,7 @@ const TestScore = () => {
   const testSelector = useAppSelector((state: RootState) => state.test);
   const dispatch = useAppDispatch();
   const totalScore = testSelector?.submitTest?.data?.totalScore ?? 0;
-  const totalQuestions = testSelector?.createTest?.data?.totalQuestions ?? 0;
+  const totalQuestions = testSelector?.startTest?.data?.totalQuestions ?? 0;
   const correctAnswerCount =
     testSelector?.submitTest?.data?.evaluatedAnswers.filter(
       (item) => item.isCorrect
@@ -35,7 +35,7 @@ const TestScore = () => {
     <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl text-center">
       <h1 className="text-3xl font-bold mb-2">Test Completed!</h1>
       <h2 className="text-5xl text-purple-600 font-bold mb-4">
-        {percentage}%
+        {percentage ?? 0}%
       </h2>
       <p className="mb-4">
         You scored {totalScore} out of {totalQuestions} questions

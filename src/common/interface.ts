@@ -89,6 +89,7 @@ export interface QuestionInterface {
 
 export interface QuestionState {
   data: QuestionInterface[];
+  selectedQuestions: QuestionInterface[];
   totalQuestions: number;
   loading: boolean;
   error: string | null;
@@ -149,7 +150,7 @@ export interface FormDataType {
 }
 
 export interface TestInfo {
-  createTest: CreateTestState;
+  startTest: CreateTestState;
   submitTest: SubmitTestState;
   testForm: FormDataType;
 }

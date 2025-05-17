@@ -1,19 +1,13 @@
 "use client";
 
-import Subjects from "@/components/dashboard/subjects";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { getQuestions } from "@/redux/slices/question/questionSlice";
-import {
-  createTest,
-  setFormData as setTestFormData,
-} from "@/redux/slices/test/test.slice";
+import { createTest } from "@/redux/slices/test/test.slice";
 import { RootState } from "@/redux/store";
 import React from "react";
 import { useRouter } from "next/navigation";
-import SelectClassesAndStreams from "@/components/dashboard/all-classes";
-import SelectCategory from "@/components/dashboard/category";
-import SelectDifficulty from "@/components/dashboard/difficulty";
 import { toast } from "react-toastify";
+import TestForm from "@/components/common/test-form";
 
 export default function CreateTestPage() {
   const accessTokenSelector = useAppSelector(
@@ -48,7 +42,7 @@ export default function CreateTestPage() {
     e.preventDefault();
     if (
       !accessTokenSelector ||
-      testSelector.createTest.loading ||
+      testSelector.startTest.loading ||
       questionsSelector.loading
     ) {
       return;
@@ -89,42 +83,12 @@ export default function CreateTestPage() {
     }
   };
 
-  const handleFormInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      setTestFormData({ ...testFormSelector, [e.target.name]: e.target.value })
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl">
         <h1 className="text-3xl font-bold mb-4">Start Test</h1>
         <form className="grid grid-cols-1 gap-4" onSubmit={(e) => startTest(e)}>
-          <input
-            type="string"
-            name="testName"
-            required
-            value={testFormSelector.testName}
-            onChange={(e) => handleFormInputChange(e)}
-            placeholder="Enter Test Name"
-            className="p-3 border rounded"
-          />
-          <SelectCategory />
-          <SelectClassesAndStreams />
-
-          <Subjects />
-
-          <SelectDifficulty />
-
-          <input
-            type="number"
-            required
-            name="numberOfQuestions"
-            value={testFormSelector.numberOfQuestions}
-            onChange={(e) => handleFormInputChange(e)}
-            placeholder="Enter number of questions"
-            className="p-3 border rounded"
-          />
+          <TestForm />
           <button
             className="bg-purple-600 text-white py-3 rounded hover:bg-purple-700 cursor-pointer"
             type="submit"

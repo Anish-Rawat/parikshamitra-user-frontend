@@ -23,7 +23,7 @@ interface RecentTestsProps {
   showAll?: boolean;
 }
 
-export function RecentTests({ showAll = false }: RecentTestsProps) {
+export function RecentTests({ showAll = false }: Readonly<RecentTestsProps>) {
   const dispatch = useAppDispatch();
   const accessToken = useAppSelector((state)=>state.auth.tokens.accessToken)
   const userInfo = useAppSelector((state)=>state.auth.user)
@@ -34,7 +34,7 @@ export function RecentTests({ showAll = false }: RecentTestsProps) {
     console.log("accessToken")
     if(accessToken){
       console.log("accessToken")
-      dispatch(getTestListsByUserId({accessToken,userId}))
+      dispatch(getTestListsByUserId({accessToken}))
     }
   },[dispatch,accessToken,userId])
   console.log("tests",tests)

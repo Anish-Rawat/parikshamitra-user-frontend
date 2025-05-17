@@ -14,17 +14,14 @@ import {
 import { TabPanel, TabContext } from "@mui/lab";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useSession } from "next-auth/react";
 import { getClassesMiddleware } from "@/utils/helper";
 import { ClassInterface } from "@/common/interface";
 import { useAppSelector } from "@/lib/hooks";
-import { ACCESS_TOKEN } from "@/utils/constants";
 import Loader from "@/components/common/loader";
 
 export default function PreparationPage() {
   const [tabValue, setTabValue] = useState("classes");
   const dispatch = useDispatch<AppDispatch>();
-  const { data: session } = useSession();
   const accessToken = useAppSelector((state:RootState)=>state.auth.tokens.accessToken)
   console.log("Access toekn preparation", accessToken)
   console.log("access",accessToken)

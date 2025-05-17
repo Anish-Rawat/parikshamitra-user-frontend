@@ -14,6 +14,7 @@ import { API_URIS } from "@/utils/constant";
   const initialState: QuestionState = {
     data: [],
     totalQuestions:0,
+    selectedQuestions: [],
     loading: false,
     error: null,
   };
@@ -72,6 +73,12 @@ import { API_URIS } from "@/utils/constant";
           state.data[existingIndex].timeLeft = timeLeft;
         }
       },
+      selectQuestions: (state, action: PayloadAction<QuestionInterface[]>) => {
+        state.selectedQuestions = action.payload;
+      },
+      resetQuestions: () => {
+        return initialState;
+      }
     },
     extraReducers: (builder) => {
       builder
@@ -105,7 +112,7 @@ import { API_URIS } from "@/utils/constant";
     },
   });
 
-  export const { setTimer } = QuestionSlice.actions;
+  export const { setTimer, selectQuestions, resetQuestions } = QuestionSlice.actions;
   
   export default QuestionSlice.reducer;
   

@@ -6,13 +6,14 @@ import { setTimer } from "@/redux/slices/question/questionSlice";
 import { setAnswers } from "@/redux/slices/test/answer.slice";
 import { submitTest } from "@/redux/slices/test/test.slice";
 import { RootState } from "@/redux/store";
-import { OPTIONS_LETTER, TOTAL_TIMER, WARNING_TIME } from "@/utils/mockData";
+import { OPTIONS_LETTER, TOTAL_TIMER, WARNING_TIME } from "@/utils/constant";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
 const Questions = () => {
   const params = useParams();
+  const [isTestCompleted, setIsTestCompleted] = React.useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const accessTokenSelector = useAppSelector(
@@ -26,7 +27,7 @@ const Questions = () => {
     (state: RootState) => state.answer
   );
   const testSelector = useAppSelector(
-    (state: RootState) => state.test.createTest
+    (state: RootState) => state.test.startTest
   );
   const questions = questionsSelector.data;
 
@@ -104,10 +105,22 @@ const Questions = () => {
           })
         );
       } else {
+        setIsTestCompleted(true);
         router.push("/test-score");
       }
     }
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!isTestCompleted) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isTestCompleted]);
 
   useEffect(() => {
     if (timer === 0) {
