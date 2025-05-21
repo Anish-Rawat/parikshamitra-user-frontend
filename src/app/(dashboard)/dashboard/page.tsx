@@ -126,20 +126,18 @@ export default function DashboardPage() {
             <CardContent>
               <RecentTests />
               {/* View All Button when not on recent tab */}
-            {tabValue !== "recent" && (
               <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
                 <Button
                   variant="outlined"
                   color="secondary"
                   size="medium"
                   endIcon={<VisibilityIcon />}
-                  sx={{ borderRadius: 6, px: 3 }}
+                  sx={{ borderRadius: 6, px: 3 ,color:"#0000FF",borderColor:"#0000FF"}}
                   onClick={handleViewAllTestClick}
                 >
                   View All Tests
                 </Button>
               </Box>
-            )}
             </CardContent>
           </Card>
         </Box>
@@ -153,7 +151,7 @@ export default function DashboardPage() {
               variant: "subtitle1",
               fontWeight: "medium",
             }}
-            sx={{ backgroundColor: "rgba(156, 39, 176, 0.04)", pb: 1 }}
+            sx={{ backgroundColor: "rgba(156, 39, 176, 0.04)", pb: 1}}
           />
           <CardContent>
             <RecentTests tabValue={tabValue} />

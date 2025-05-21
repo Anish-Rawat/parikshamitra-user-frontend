@@ -154,12 +154,12 @@ export function RecentTests({ tabValue }: { tabValue?: string }) {
                   <TableCell align="right">
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                       <Tooltip title="View Details">
-                        <IconButton size="small" color="primary" sx={{ mr: 1 }}>
+                        <IconButton size="small" color="secondary" sx={{ mr: 1 , color: '#0000FF'}}>
                           <VisibilityIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Download Report">
-                        <IconButton size="small" color="secondary">
+                        <IconButton size="small" color="secondary" sx={{ color: '#0000FF' }}>
                           <FileDownloadIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>

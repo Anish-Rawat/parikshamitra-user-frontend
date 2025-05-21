@@ -108,7 +108,7 @@ export function AppSidebar() {
               justifyContent: "center",
               alignItems: "center",
               borderRadius: "8px",
-              backgroundColor: "#6B21A8",
+              backgroundColor: "#0000FF",
               color: "white",
             }}
           >
@@ -117,7 +117,7 @@ export function AppSidebar() {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Typography
               variant="h6"
-              style={{ color: "#6B21A8", fontSize: "16px" }}
+              style={{ color: "#0000FF", fontSize: "16px" }}
             >
               Pariksha-Mitra
             </Typography>
