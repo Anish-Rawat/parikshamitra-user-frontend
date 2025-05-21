@@ -5,6 +5,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 const initialState: TestState = {
   getTestsByUserId: {
     testsListing: [],
+    totalTests:0,
     loading: false,
     error: null,
   },

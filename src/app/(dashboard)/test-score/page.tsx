@@ -10,20 +10,22 @@ import React from "react";
 
 const TestScore = () => {
   const router = useRouter();
-  const testSelector = useAppSelector((state: RootState) => state.test);
   const dispatch = useAppDispatch();
+
+  const testSelector = useAppSelector((state: RootState) => state.test);
   const totalScore = testSelector?.submitTest?.data?.totalScore ?? 0;
   const totalQuestions = testSelector?.createTest?.data?.totalQuestions ?? 0;
-  const correctAnswerCount =
-    testSelector?.submitTest?.data?.evaluatedAnswers.filter(
-      (item) => item.isCorrect
-    ).length;
-  const attemptedQuestionCount =
-    testSelector?.submitTest?.data?.evaluatedAnswers.filter(
-      (item) => item.submittedAnswer
-    ).length;
+  const evaluatedAnswers =
+    testSelector?.submitTest?.data?.evaluatedAnswers ?? [];
+
+  const correctAnswerCount = evaluatedAnswers.filter(
+    (item) => item.isCorrect
+  ).length;
+  const attemptedQuestionCount = evaluatedAnswers.filter(
+    (item) => item.submittedAnswer
+  ).length;
   const incorrectAnswerCount = attemptedQuestionCount - correctAnswerCount;
-  const percentage = Math.floor((totalScore / totalQuestions) * 100) ?? 0;
+  const percentage = Math.floor((totalScore / totalQuestions) * 100) || 0;
 
   const handleStartNewTest = () => {
     dispatch(resetAnswers());
@@ -32,38 +34,59 @@ const TestScore = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl text-center">
-      <h1 className="text-3xl font-bold mb-2">Test Completed!</h1>
-      <h2 className="text-5xl text-purple-600 font-bold mb-4">
-        {percentage}%
-      </h2>
-      <p className="mb-4">
-        You scored {totalScore} out of {totalQuestions} questions
-      </p>
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div>
-          <h4 className="font-bold">Total Questions</h4>
-          <p>{totalQuestions}</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="bg-gradient-to-br from-indigo-50 via-white to-indigo-100 p-8 rounded-2xl shadow-xl w-full max-w-3xl mx-auto text-center">
+        <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
+          🎉 Test Completed!
+        </h1>
+
+        <div className="mb-6">
+          <div className="text-7xl font-bold text-indigo-600 drop-shadow">
+            {percentage}%
+          </div>
+          <p className="text-gray-600 mt-2">
+            You scored{" "}
+            <span className="font-semibold text-indigo-700">{totalScore}</span>{" "}
+            out of{" "}
+            <span className="font-semibold text-indigo-700">
+              {totalQuestions}
+            </span>{" "}
+            questions
+          </p>
         </div>
-        <div>
-          <h4 className="font-bold">Attempted</h4>
-          <p>{attemptedQuestionCount}</p>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+          <div className="bg-white border rounded-xl p-4 shadow">
+            <p className="text-gray-500 font-medium">Total</p>
+            <p className="text-lg font-bold text-gray-800">{totalQuestions}</p>
+          </div>
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 shadow">
+            <p className="text-blue-600 font-medium">Attempted</p>
+            <p className="text-lg font-bold text-blue-700">
+              {attemptedQuestionCount}
+            </p>
+          </div>
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 shadow">
+            <p className="text-green-600 font-medium">Correct</p>
+            <p className="text-lg font-bold text-green-700">
+              {correctAnswerCount}
+            </p>
+          </div>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 shadow">
+            <p className="text-red-600 font-medium">Incorrect</p>
+            <p className="text-lg font-bold text-red-700">
+              {incorrectAnswerCount}
+            </p>
+          </div>
         </div>
-        <div>
-          <h4 className="font-bold">Correct</h4>
-          <p>{correctAnswerCount}</p>
-        </div>
-        <div>
-          <h4 className="font-bold">Incorrect</h4>
-          <p>{incorrectAnswerCount}</p>
-        </div>
+
+        <button
+          className="mt-8 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full font-semibold shadow transition"
+          onClick={handleStartNewTest}
+        >
+          🔁 Start New Test
+        </button>
       </div>
-      <button
-        className="bg-purple-600 text-white px-6 py-3 rounded cursor-pointer"
-        onClick={handleStartNewTest}
-      >
-        Start New Test
-      </button>
     </div>
   );
 };

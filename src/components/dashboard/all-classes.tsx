@@ -7,9 +7,9 @@ import { setFormData as setTestFormData } from "@/redux/slices/test/test.slice";
 
 const SelectClassesAndStreams = () => {
   const dispatch = useAppDispatch();
-    const testFormSelector = useAppSelector(
-      (state: RootState) => state.test.testForm
-    );
+  const testFormSelector = useAppSelector(
+    (state: RootState) => state.test.testForm
+  );
 
   const accessTokenSelector = useAppSelector(
     (state: RootState) => state.auth.tokens.accessToken
@@ -22,7 +22,6 @@ const SelectClassesAndStreams = () => {
   const streams = classesAndStreamSelector.data.filter(
     (item) => item.category === "stream"
   );
-
   const classes = classesAndStreamSelector.data.filter(
     (item) => item.category === "class"
   );
@@ -46,28 +45,37 @@ const SelectClassesAndStreams = () => {
   }, [accessTokenSelector]);
 
   return (
-    <select
-      disabled={!testFormSelector.category}
-      name="class"
-      required
-      value={testFormSelector.class}
-      onChange={handleFormChange}
-      className="p-3 border rounded"
-    >
-      <option value="">Select {testFormSelector.category}</option>
-      {testFormSelector.category === "Stream" &&
-        streams.map((cls) => (
-          <option key={cls.classId} value={cls.classId}>
-            {cls.className}
-          </option>
-        ))}
-      {testFormSelector.category === "Class" &&
-        classes.map((cls) => (
-          <option key={cls.classId} value={cls.classId}>
-            {cls.className}
-          </option>
-        ))}
-    </select>
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {testFormSelector.category || "Class / Stream"}
+      </label>
+      <select
+        disabled={!testFormSelector.category}
+        name="class"
+        required
+        value={testFormSelector.class}
+        onChange={handleFormChange}
+        className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+          !testFormSelector.category ? "bg-gray-100 cursor-not-allowed" : ""
+        }`}
+      >
+        <option value="">
+          Select {testFormSelector.category}
+        </option>
+        {testFormSelector.category === "Stream" &&
+          streams.map((cls) => (
+            <option key={cls.classId} value={cls.classId}>
+              {cls.className}
+            </option>
+          ))}
+        {testFormSelector.category === "Class" &&
+          classes.map((cls) => (
+            <option key={cls.classId} value={cls.classId}>
+              {cls.className}
+            </option>
+          ))}
+      </select>
+    </div>
   );
 };
 

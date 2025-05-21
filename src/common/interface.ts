@@ -66,6 +66,7 @@ export interface TestState {
   };
   getTestsByUserId: {
     testsListing: Test[];
+    totalTests: number;
     loading: boolean;
     error: string | null;
   };
